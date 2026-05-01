@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Litgrid — Pirkimų grafikų generatorius</title>
+<style>
+  :root{
+    --navy:#1B2960;
+    --navy-dark:#0F1A40;
+    --navy-light:#2E3D75;
+    --accent:#4A6BCC;
+    --bg:#F4F6FC;
+    --bg-alt:#EAEEF8;
+    --border:#DCE2F0;
+    --border-strong:#B8C2DE;
+    --success:#1F7A4D;
+    --success-bg:#E5F4EC;
+    --warning:#9C5E0F;
+    --warning-bg:#FBF3DD;
+    --danger:#A6262C;
+    --danger-bg:#FCE7E8;
+    --text:#16213A;
+    --text-secondary:#4A5573;
+    --text-muted:#7B86A4;
+    --shadow-sm:0 1px 2px rgba(15,26,64,.06),0 1px 1px rgba(15,26,64,.04);
+    --shadow-md:0 4px 12px rgba(15,26,64,.08),0 2px 4px rgba(15,26,64,.04);
+    --radius:6px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    font-size:14px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ===== HEADER ===== */
+  .app-header{
+    background:#fff;
+    border-bottom:1px solid var(--border);
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    box-shadow:var(--shadow-sm);
+  }
+  .logo-mark{flex-shrink:0}
+  .logo-text{
+    font-size:22px;
+    font-weight:700;
+    color:var(--navy);
+    letter-spacing:-.4px;
+  }
+  .app-title{
+    flex:1;
+    border-left:1px solid var(--border);
+    padding-left:18px;
+    margin-left:6px;
+  }
+  .app-title h1{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    color:var(--text);
+    letter-spacing:.1px;
+  }
+  .app-title p{
+    margin:2px 0 0;
+    font-size:12px;
+    color:var(--text-muted);
+  }
+  .header-meta{
+    font-size:11px;
+    color:var(--text-muted);
+    text-align:right;
+    line-height:1.4;
+  }
+
+  /* ===== LAYOUT ===== */
+  .container{max-width:1320px;margin:0 auto;padding:24px 32px 60px}
+  .card{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:24px 28px;
+    margin-bottom:20px;
+    box-shadow:var(--shadow-sm);
+  }
+  .card-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:-2px 0 16px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--border);
+  }
+  .card-title{
+    margin:0;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy);
+    letter-spacing:.2px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .card-title .step-num{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:22px;height:22px;
+    background:var(--navy);
+    color:#fff;
+    border-radius:50%;
+    font-size:11px;
+    font-weight:700;
+  }
+  .card-subtitle{font-size:12px;color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0}
+
+  /* ===== FORM ===== */
+  .form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px 22px;
+  }
+  .form-grid.cols-3{grid-template-columns:repeat(3,1fr)}
+  .form-field{display:flex;flex-direction:column}
+  .form-field.full{grid-column:1 / -1}
+  .form-field label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-secondary);
+    margin-bottom:5px;
+    letter-spacing:.1px;
+  }
+  .form-field label .req{color:var(--danger);margin-left:2px}
+  .form-field input,.form-field select,.form-field textarea{
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius);
+    padding:8px 10px;
+    font-size:13px;
+    color:var(--text);
+    background:#fff;
+    font-family:inherit;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  .form-field input:focus,.form-field select:focus,.form-field textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(74,107,204,.12);
+  }
+  .form-field .hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+  .form-field input[type=date]{font-family:inherit}
+
+  /* ===== TOGGLE ===== */
+  .toggle-group{
+    display:inline-flex;
+    background:var(--bg-alt);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:2px;
+  }
+  .toggle-group button{
+    border:none;background:transparent;
+    padding:6px 14px;
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-secondary);
+    cursor:pointer;
+    border-radius:4px;
+    font-family:inherit;
+    transition:all .15s;
+  }
+  .toggle-group button.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
+  .toggle-group button:not(.active):hover{color:var(--navy)}
+
+  /* ===== PHASES TABLE ===== */
+  .phases-info{
+    background:var(--bg-alt);
+    border-left:3px solid var(--accent);
+    padding:10px 14px;
+    border-radius:0 var(--radius) var(--radius) 0;
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-bottom:16px;
+    line-height:1.5;
+  }
+  .phases-info strong{color:var(--navy)}
+  .phases-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    font-size:13px;
+  }
+  .phases-table th{
+    background:var(--navy);
+    color:#fff;
+    text-align:left;
+    padding:10px 12px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+  }
+  .phases-table th:first-child{border-top-left-radius:var(--radius)}
+  .phases-table th:last-child{border-top-right-radius:var(--radius)}
+  .phases-table td{
+    padding:8px 12px;
+    border-bottom:1px solid var(--border);
+    vertical-align:top;
+  }
+  .phases-table tr.stage-row td{
+    background:linear-gradient(0deg,var(--bg-alt),var(--bg-alt));
+    font-weight:700;
+    color:var(--navy);
+    text-transform:uppercase;
+    font-size:11px;
+    letter-spacing:.4px;
+    padding:7px 12px;
+  }
+  .phases-table tr.group-row td{
+    background:#FAFBFE;
+    font-weight:600;
+  }
+  .phases-table tr.subphase-row td:nth-child(2){padding-left:32px}
+  .phases-table .col-num{width:55px;font-variant-numeric:tabular-nums;color:var(--text-muted);font-weight:500}
+  .phases-table .col-duration{width:120px}
+  .phases-table .col-start,.phases-table .col-end{width:120px;font-variant-numeric:tabular-nums}
+  .phases-table .col-notes{width:32%}
+  .duration-input{
+    width:60px;
+    padding:5px 7px;
+    border:1px solid var(--border-strong);
+    border-radius:4px;
+    font-size:13px;
+    text-align:center;
+    font-variant-numeric:tabular-nums;
+    font-family:inherit;
+  }
+  .duration-input.modified{border-color:var(--warning);background:var(--warning-bg)}
+  .duration-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,107,204,.12)}
+  .duration-suffix{margin-left:4px;font-size:11px;color:var(--text-muted)}
+  .duration-std{font-size:10px;color:var(--text-muted);display:block;margin-top:2px}
+  .notes-input{
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:5px 7px;
+    font-size:12px;
+    font-family:inherit;
+    resize:vertical;
+    min-height:32px;
+    line-height:1.4;
+  }
+  .notes-input.required{border-color:var(--warning);background:#FFFCF2}
+  .notes-input.required::placeholder{color:var(--warning);font-weight:500}
+  .notes-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,107,204,.12)}
+  .holiday-flag{
+    display:inline-block;
+    margin-left:6px;
+    font-size:10px;
+    background:var(--warning-bg);
+    color:var(--warning);
+    padding:1px 6px;
+    border-radius:3px;
+    font-weight:600;
+  }
+
+  /* ===== TOTALS ===== */
+  .phases-totals{
+    margin-top:16px;
+    padding:14px 18px;
+    background:linear-gradient(135deg,#F0F4FE,#E6ECFA);
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    flex-wrap:wrap;
+  }
+  .totals-block{display:flex;flex-direction:column;gap:2px}
+  .totals-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;font-weight:600;letter-spacing:.4px}
+  .totals-value{font-size:18px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+  .totals-value .small{font-size:13px;font-weight:500;color:var(--text-secondary);margin-left:4px}
+  .totals-deviation{
+    font-size:12px;
+    color:var(--warning);
+    font-weight:600;
+  }
+
+  /* ===== ACTION BAR ===== */
+  .action-bar{
+    position:sticky;
+    bottom:16px;
+    z-index:10;
+    background:#fff;
+    border:1px solid var(--border-strong);
+    border-radius:8px;
+    padding:14px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    box-shadow:0 8px 24px rgba(15,26,64,.12);
+  }
+  .action-bar-info{font-size:12px;color:var(--text-secondary)}
+  .action-bar-info strong{color:var(--navy)}
+  .action-buttons{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{
+    border:1px solid var(--navy);
+    background:#fff;
+    color:var(--navy);
+    padding:8px 16px;
+    font-size:13px;
+    font-weight:600;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-family:inherit;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    transition:all .15s;
+    letter-spacing:.1px;
+  }
+  .btn:hover{background:var(--bg-alt)}
+  .btn-primary{background:var(--navy);color:#fff}
+  .btn-primary:hover{background:var(--navy-dark)}
+  .btn-ghost{border-color:var(--border-strong);color:var(--text-secondary)}
+  .btn-ghost:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+  .btn svg{width:14px;height:14px}
+
+  /* ===== PREVIEW ===== */
+  .preview-tabs{
+    display:flex;
+    gap:4px;
+    border-bottom:2px solid var(--border);
+    margin-bottom:18px;
+  }
+  .preview-tab{
+    border:none;
+    background:transparent;
+    padding:9px 18px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-muted);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    margin-bottom:-2px;
+    font-family:inherit;
+    letter-spacing:.2px;
+  }
+  .preview-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+  .preview-tab:hover:not(.active){color:var(--text-secondary)}
+  .preview-tab .badge{
+    display:inline-block;
+    background:var(--bg-alt);
+    color:var(--text-secondary);
+    padding:1px 7px;
+    border-radius:10px;
+    font-size:10px;
+    margin-left:6px;
+    font-weight:700;
+  }
+  .preview-tab.active .badge{background:var(--navy);color:#fff}
+
+  .schedule-doc{
+    background:#fff;
+    border:1px solid var(--border);
+    padding:32px 40px;
+    border-radius:var(--radius);
+    font-size:13px;
+  }
+  .schedule-doc-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:2px solid var(--navy);
+    padding-bottom:14px;
+    margin-bottom:18px;
+  }
+  .schedule-doc-header .doc-logo{display:flex;align-items:center;gap:10px}
+  .schedule-doc-header .doc-logo .doc-logo-text{font-size:18px;font-weight:700;color:var(--navy)}
+  .schedule-doc-meta{font-size:11px;color:var(--text-muted);text-align:right;line-height:1.5}
+  .schedule-title{
+    text-align:center;
+    margin:18px 0 6px;
+    font-size:15px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1.4px;
+    color:var(--navy);
+  }
+  .schedule-subtitle{
+    text-align:center;
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:22px;
+    font-style:italic;
+  }
+  .schedule-info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:6px 24px;
+    margin-bottom:22px;
+    font-size:12px;
+  }
+  .schedule-info-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px dotted var(--border)}
+  .schedule-info-label{font-weight:600;color:var(--text-secondary);min-width:160px}
+  .schedule-info-value{color:var(--text);flex:1}
+  .schedule-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:12px;
+  }
+  .schedule-table th{
+    background:var(--navy);
+    color:#fff;
+    padding:8px 10px;
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    font-weight:600;
+    border:1px solid var(--navy-dark);
+  }
+  .schedule-table td{
+    padding:7px 10px;
+    border:1px solid var(--border-strong);
+    vertical-align:top;
+  }
+  .schedule-table .num{width:40px;text-align:center;font-variant-numeric:tabular-nums;color:var(--text-muted)}
+  .schedule-table .date{width:110px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .schedule-table .duration{width:80px;text-align:center;font-variant-numeric:tabular-nums}
+  .schedule-table tr.stage td{background:var(--bg-alt);font-weight:700;color:var(--navy);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
+  .schedule-table tr.group td{background:#F8FAFE;font-weight:600}
+  .schedule-table tr.subphase td:nth-child(2){padding-left:24px;color:var(--text-secondary)}
+  .schedule-table tr.total td{background:var(--navy);color:#fff;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px}
+  .schedule-notes-cell{font-size:11px;color:var(--warning);font-style:italic}
+  .schedule-signatures{
+    margin-top:36px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+  }
+  .signature-block{font-size:12px}
+  .signature-line{border-top:1px solid var(--text);margin-top:38px;padding-top:4px;font-size:11px;color:var(--text-muted)}
+  .signature-block .role{font-weight:600;color:var(--text-secondary)}
+
+  .empty-state{
+    text-align:center;
+    padding:42px 20px;
+    color:var(--text-muted);
+    font-size:13px;
+  }
+  .empty-state svg{width:38px;height:38px;color:var(--border-strong);margin-bottom:8px}
+
+  /* ===== ALERTS ===== */
+  .alert{
+    border-radius:var(--radius);
+    padding:10px 14px;
+    font-size:12px;
+    margin-bottom:14px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    line-height:1.5;
+  }
+  .alert.warn{background:var(--warning-bg);border:1px solid #ECCB87;color:var(--warning)}
+  .alert.info{background:#E8F0FE;border:1px solid #B7CCF1;color:var(--navy)}
+  .alert svg{flex-shrink:0;width:16px;height:16px;margin-top:1px}
+
+  /* ===== PRINT ===== */
+  @media print{
+    body{background:#fff}
+    .app-header,.action-bar,#section-info,#section-phases,.preview-tabs,.no-print{display:none !important}
+    .container{max-width:none;padding:0;margin:0}
+    .card{border:none;box-shadow:none;padding:0;margin:0}
+    .card-header{display:none}
+    .schedule-doc{
+      border:none;
+      padding:0;
+      box-shadow:none;
+      page-break-after:avoid;
+    }
+    .schedule-doc.hidden-print{display:none !important}
+    .schedule-table{font-size:10.5px}
+    .schedule-table th{
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+      background:var(--navy) !important;
+      color:#fff !important;
+    }
+    .schedule-table tr.stage td{
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+      background:var(--bg-alt) !important;
+    }
+    .schedule-table tr.total td{
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+      background:var(--navy) !important;
+      color:#fff !important;
+    }
+    .schedule-doc-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    @page{margin:14mm 14mm 16mm}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGO + HEADER -->
+<header class="app-header">
+  <div class="logo-mark">
+    <!-- Litgrid 8-pointed star + circle, inline SVG -->
+    <svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#1B2960" stroke-width="2.6" stroke-linecap="round" fill="none">
+        <line x1="22" y1="3"  x2="22" y2="41"/>
+        <line x1="3"  y1="22" x2="41" y2="22"/>
+        <line x1="8.5"  y1="8.5"  x2="35.5" y2="35.5"/>
+        <line x1="35.5" y1="8.5"  x2="8.5"  y2="35.5"/>
+      </g>
+      <circle cx="22" cy="22" r="7" stroke="#1B2960" stroke-width="2.4" fill="none"/>
+      <circle cx="22" cy="22" r="1.7" fill="#1B2960"/>
+    </svg>
+  </div>
+  <div class="logo-text">Litgrid</div>
+  <div class="app-title">
+    <h1>Pirkimų grafikų generatorius</h1>
+    <p>Vidinis įrankis pirkimo iniciatoriams ir pirkimo organizatoriams</p>
+  </div>
+  <div class="header-meta">
+    Versija 1.0 · 2026<br>
+    Pirkimų skyrius
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ===== STEP 1: PIRKIMO INFORMACIJA ===== -->
+  <section class="card" id="section-info">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-num">1</span> Pirkimo informacija</h2>
+      <span class="card-subtitle">Užpildykite pagrindinius pirkimo duomenis</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-field full">
+        <label>Pirkimo pavadinimas <span class="req">*</span></label>
+        <input type="text" id="f-pavadinimas" placeholder="pvz. Aukštos įtampos transformatoriaus pirkimas Vilniaus pastotei">
+      </div>
+
+      <div class="form-field">
+        <label>Pirkimo iniciatorius <span class="req">*</span></label>
+        <input type="text" id="f-iniciatorius" placeholder="Vardas Pavardė, padalinys">
+      </div>
+
+      <div class="form-field">
+        <label>Pirkimo organizatorius <span class="req">*</span></label>
+        <input type="text" id="f-organizatorius" placeholder="Vardas Pavardė, Pirkimų sk.">
+      </div>
+
+      <div class="form-field">
+        <label>Pirkimo būdas <span class="req">*</span></label>
+        <select id="f-budas">
+          <option value="">— Pasirinkite pirkimo būdą —</option>
+          <optgroup label="Mažos vertės pirkimai">
+            <option value="MV-NR">MV-NR — Neskelbiama apklausa raštu (30 d.d.)</option>
+            <option value="MV-SAB">MV-SAB — Skelbiama apklausa be derybų (45 d.d.)</option>
+            <option value="MV-SAD">MV-SAD — Skelbiama apklausa su derybomis (60 d.d.)</option>
+          </optgroup>
+          <optgroup label="Supaprastinti pirkimai">
+            <option value="S-ND">S-ND — Neskelbiamos derybos (50 d.d.)</option>
+            <option value="S-AK">S-AK — Atviras konkursas (75 d.d.)</option>
+            <option value="S-SD">S-SD — Skelbiamos derybos (95 d.d.)</option>
+          </optgroup>
+          <optgroup label="Tarptautiniai pirkimai">
+            <option value="T-ND">T-ND — Neskelbiamos derybos (75 d.d.)</option>
+            <option value="T-AK">T-AK — Atviras konkursas (90 d.d.)</option>
+            <option value="T-SD">T-SD — Skelbiamos derybos (135 d.d.)</option>
+          </optgroup>
+          <optgroup label="Dinaminė pirkimų sistema">
+            <option value="DPS">DPS — DPS pagrindinis (60 d.d.)</option>
+            <option value="DPS-K">DPS-K — DPS konkretus pirkimas (52 d.d.)</option>
+          </optgroup>
+        </select>
+        <span class="hint">Žodiniams (MV-NZ) ir CPO pirkimams grafikai nerengiami.</span>
+      </div>
+
+      <div class="form-field">
+        <label>Pirkimo pradžios data <span class="req">*</span></label>
+        <input type="date" id="f-pradzia">
+        <span class="hint">Pirkimo paraiškos priskyrimo data. Skaičiavimas vykdomas tik darbo dienomis (be šeštadienių, sekmadienių ir LR švenčių).</span>
+      </div>
+
+      <div class="form-field">
+        <label>Detalumo lygis</label>
+        <div class="toggle-group" id="t-detail">
+          <button type="button" data-val="simple" class="active">Supaprastintas</button>
+          <button type="button" data-val="detailed">Detalus</button>
+        </div>
+        <span class="hint">Supaprastintas — tik pagrindiniai etapai (1.1, 1.2, 1.3...). Detalus — su VPK, CPVA ir Valdybos žingsniais.</span>
+      </div>
+
+      <div class="form-field">
+        <label>Pirkimo sąlygų priedo numeris (B grafike)</label>
+        <input type="text" id="f-priedas" placeholder="pvz. SPS 5 priedas">
+        <span class="hint">Atsispindi B tipo grafiko antraštėje (skirta tiekėjams).</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 2: ETAPAI ===== -->
+  <section class="card" id="section-phases">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-num">2</span> Pirkimo etapai</h2>
+      <span class="card-subtitle">Redaguokite trukmes pagal poreikį</span>
+    </div>
+
+    <div id="phases-empty" class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      <div>Pasirinkite pirkimo būdą ir pradžios datą, kad būtų atvaizduoti etapai.</div>
+    </div>
+
+    <div id="phases-content" style="display:none">
+      <div class="phases-info">
+        <strong>Patarimas:</strong> standartines trukmes galite koreguoti. Jei trukmė skiriasi nuo standartinės, <strong>būtina užpildyti pastabų laukelį</strong> — ši informacija atvaizduojama tik A tipo grafike.
+      </div>
+
+      <table class="phases-table">
+        <thead>
+          <tr>
+            <th class="col-num">Nr.</th>
+            <th>Pirkimo etapas</th>
+            <th class="col-duration">Trukmė</th>
+            <th class="col-start">Pradžios data</th>
+            <th class="col-end">Pabaigos data</th>
+            <th class="col-notes">Pastabos / nukrypimo pagrindas</th>
+          </tr>
+        </thead>
+        <tbody id="phases-tbody"></tbody>
+      </table>
+
+      <div class="phases-totals">
+        <div class="totals-block">
+          <span class="totals-label">Pasirengimo etapas</span>
+          <span class="totals-value" id="t-prep">— <span class="small">d.d.</span></span>
+        </div>
+        <div class="totals-block">
+          <span class="totals-label">Pirkimo vykdymo etapas</span>
+          <span class="totals-value" id="t-exec">— <span class="small">d.d.</span></span>
+        </div>
+        <div class="totals-block">
+          <span class="totals-label">Bendra pirkimo trukmė</span>
+          <span class="totals-value" id="t-total">— <span class="small">d.d.</span></span>
+          <span class="totals-deviation" id="t-deviation"></span>
+        </div>
+        <div class="totals-block">
+          <span class="totals-label">Numatoma pabaigos data</span>
+          <span class="totals-value" id="t-enddate" style="font-size:15px">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STEP 3: PERŽIŪRA ===== -->
+  <section class="card" id="section-preview">
+    <div class="card-header">
+      <h2 class="card-title"><span class="step-num">3</span> Grafikų peržiūra</h2>
+      <span class="card-subtitle">Patikrinkite ir spausdinkite</span>
+    </div>
+
+    <div class="preview-tabs">
+      <button class="preview-tab active" data-tab="A">A tipas — Detalus (vidinis)</button>
+      <button class="preview-tab" data-tab="B">B tipas — Sutrumpintas (tiekėjams)</button>
+    </div>
+
+    <div id="preview-empty" class="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+      <div>Užpildykite pirkimo informaciją, kad pamatytumėte grafikų peržiūrą.</div>
+    </div>
+
+    <div id="preview-A" class="schedule-doc" style="display:none"></div>
+    <div id="preview-B" class="schedule-doc hidden-print" style="display:none"></div>
+  </section>
+
+  <!-- ===== ACTION BAR ===== -->
+  <div class="action-bar">
+    <div class="action-bar-info">
+      <strong>Spausdinimas į PDF:</strong> pasirinkite tipą peržiūroje, tada „Spausdinti“ → „Išsaugoti kaip PDF“. Aktyvi peržiūra spausdinama A4 formatu.
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-ghost" type="button" onclick="resetForm()" title="Išvalyti formą">↺ Išvalyti</button>
+      <button class="btn btn-primary" type="button" onclick="printSchedule()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+        Spausdinti / Išsaugoti PDF
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   LITGRID PIRKIMŲ GRAFIKŲ GENERATORIUS — JS LOGIKA
+   ============================================================ */
+
+/* ---------- 1. LR ŠVENTĖS 2024-2030 ---------- */
+const HOLIDAYS = new Set([
+  // 2024
+  '2024-01-01','2024-02-16','2024-03-11','2024-03-29','2024-03-31','2024-04-01',
+  '2024-05-01','2024-05-05','2024-06-02','2024-06-24','2024-07-06','2024-08-15',
+  '2024-11-01','2024-11-02','2024-12-24','2024-12-25','2024-12-26',
+  // 2025
+  '2025-01-01','2025-02-16','2025-03-11','2025-04-18','2025-04-20','2025-04-21',
+  '2025-05-01','2025-05-04','2025-06-01','2025-06-24','2025-07-06','2025-08-15',
+  '2025-11-01','2025-11-02','2025-12-24','2025-12-25','2025-12-26',
+  // 2026
+  '2026-01-01','2026-02-16','2026-03-11','2026-04-03','2026-04-05','2026-04-06',
+  '2026-05-01','2026-05-03','2026-06-07','2026-06-24','2026-07-06','2026-08-15',
+  '2026-11-01','2026-11-02','2026-12-24','2026-12-25','2026-12-26',
+  // 2027
+  '2027-01-01','2027-02-16','2027-03-11','2027-03-26','2027-03-28','2027-03-29',
+  '2027-05-01','2027-05-02','2027-06-06','2027-06-24','2027-07-06','2027-08-15',
+  '2027-11-01','2027-11-02','2027-12-24','2027-12-25','2027-12-26',
+  // 2028
+  '2028-01-01','2028-02-16','2028-03-11','2028-04-14','2028-04-16','2028-04-17',
+  '2028-05-01','2028-05-07','2028-06-04','2028-06-24','2028-07-06','2028-08-15',
+  '2028-11-01','2028-11-02','2028-12-24','2028-12-25','2028-12-26',
+  // 2029
+  '2029-01-01','2029-02-16','2029-03-11','2029-03-30','2029-04-01','2029-04-02',
+  '2029-05-01','2029-05-06','2029-06-03','2029-06-24','2029-07-06','2029-08-15',
+  '2029-11-01','2029-11-02','2029-12-24','2029-12-25','2029-12-26',
+  // 2030
+  '2030-01-01','2030-02-16','2030-03-11','2030-04-19','2030-04-21','2030-04-22',
+  '2030-05-01','2030-05-05','2030-06-02','2030-06-24','2030-07-06','2030-08-15',
+  '2030-11-01','2030-11-02','2030-12-24','2030-12-25','2030-12-26',
+]);
+
+function fmtISO(d){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), dd=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function isWorkingDay(d){
+  const wd=d.getDay();
+  if(wd===0||wd===6) return false;
+  if(HOLIDAYS.has(fmtISO(d))) return false;
+  return true;
+}
+function addWorkingDays(startDate, days){
+  if(days<=0){
+    // duration 0 = end on same day as start (or next working day)
+    let d=new Date(startDate);
+    while(!isWorkingDay(d)){ d.setDate(d.getDate()+1); }
+    return d;
+  }
+  let d=new Date(startDate);
+  // ensure start is on a working day; if not, advance
+  while(!isWorkingDay(d)){ d.setDate(d.getDate()+1); }
+  // count `days` working days inclusive of start? Convention: phase of N d.d. starting on day X ends on day X+N-1 working day.
+  let count=1;
+  while(count<days){
+    d.setDate(d.getDate()+1);
+    if(isWorkingDay(d)) count++;
+  }
+  return d;
+}
+function nextWorkingDayAfter(d){
+  let n=new Date(d);
+  do { n.setDate(n.getDate()+1); } while(!isWorkingDay(n));
+  return n;
+}
+function fmtDateLT(d){
+  if(!d) return '—';
+  return fmtISO(d);
+}
+function fmtDateLTLong(d){
+  if(!d) return '—';
+  const months=['sausio','vasario','kovo','balandžio','gegužės','birželio','liepos','rugpjūčio','rugsėjo','spalio','lapkričio','gruodžio'];
+  return `${d.getFullYear()} m. ${months[d.getMonth()]} ${d.getDate()} d.`;
+}
+
+/* ---------- 2. PIRKIMO METODŲ DUOMENYS ---------- */
+/*
+  Struktūra:
+    code, name, totalStd, prepStd, execStd
+    groups: [{code, name, stage:'pasirengimas'|'vykdymas', subPhases:[{code, name, duration}]}]
+  Pastaba: jei grupė neturi sub-phazių (subPhases tuščias) — ji pati skaičiuojasi kaip eilutė; trukmė imama iš group.duration.
+*/
+
+const METHODS = {
+  'MV-NR': {
+    code:'MV-NR',
+    name:'Mažos vertės pirkimas — neskelbiama apklausa raštu',
+    totalStd:30, prepStd:5, execStd:25,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:1},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:0},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:1},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą ir pasiūlymų gavimas',stage:'vykdymas',duration:7,subPhases:[]},
+      {code:'1.4',name:'Pasiūlymų nagrinėjimas',stage:'vykdymas',subPhases:[
+        {code:'1.4.1',name:'Pasiūlymų vertinimas, kvalifikacijos tikrinimas',duration:5},
+        {code:'1.4.2',name:'Užklausimai ir patikslinimai',duration:5},
+      ]},
+      {code:'1.5',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',subPhases:[
+        {code:'1.5.1',name:'Pranešimo apie priimtus sprendimus išplatinimas',duration:1},
+        {code:'1.5.2',name:'Sutarties derinimas ir pasirašymas',duration:7},
+      ]},
+    ],
+  },
+
+  'MV-SAB': {
+    code:'MV-SAB',
+    name:'Mažos vertės pirkimas — skelbiama apklausa be derybų',
+    totalStd:45, prepStd:10, execStd:35,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:1},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:3},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pasiūlymų gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.5',name:'Pasiūlymų nagrinėjimas',stage:'vykdymas',duration:14,subPhases:[]},
+      {code:'1.6',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:10,subPhases:[]},
+    ],
+  },
+
+  'MV-SAD': {
+    code:'MV-SAD',
+    name:'Mažos vertės pirkimas — skelbiama apklausa su derybomis',
+    totalStd:60, prepStd:10, execStd:50,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:1},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:3},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pirminių pasiūlymų gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.5',name:'Pirminių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:7,subPhases:[]},
+      {code:'1.6',name:'Derybos',stage:'vykdymas',duration:7,subPhases:[]},
+      {code:'1.7',name:'Kvietimo pateikti galutinius pasiūlymus rengimas',stage:'vykdymas',duration:2,subPhases:[]},
+      {code:'1.8',name:'Galutinių pasiūlymų rengimas ir gavimas',stage:'vykdymas',duration:8,subPhases:[]},
+      {code:'1.9',name:'Galutinių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:7,subPhases:[]},
+      {code:'1.10',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:8,subPhases:[]},
+    ],
+  },
+
+  'S-ND': {
+    code:'S-ND',
+    name:'Supaprastintas pirkimas — neskelbiamos derybos',
+    totalStd:50, prepStd:5, execStd:45,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:1},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:0},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:1},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Pirminių pasiūlymų gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.4',name:'Pirminių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:5,subPhases:[]},
+      {code:'1.5',name:'Derybos',stage:'vykdymas',duration:5,subPhases:[]},
+      {code:'1.6',name:'Kvietimo pateikti galutinius pasiūlymus rengimas',stage:'vykdymas',duration:3,subPhases:[]},
+      {code:'1.7',name:'Galutinių pasiūlymų rengimas ir gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.8',name:'Galutinių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:5,subPhases:[]},
+      {code:'1.9',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:7,subPhases:[]},
+    ],
+  },
+
+  'S-AK': {
+    code:'S-AK',
+    name:'Supaprastintas pirkimas — atviras konkursas',
+    totalStd:75, prepStd:15, execStd:60,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:2},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:1},
+        {code:'1.1.5',name:'Galutinis techninės specifikacijos vertinimas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:4},
+        {code:'1.2.3',name:'Pirkimo dokumentų pateikimas Pirkimų komisijai (VPK)',duration:1},
+        {code:'1.2.4',name:'VPK posėdis',duration:0},
+        {code:'1.2.5',name:'Pirkimo sąlygų tikslinimas po VPK',duration:1},
+        {code:'1.2.6',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pasiūlymų gavimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.5',name:'Pasiūlymų nagrinėjimas',stage:'vykdymas',duration:25,subPhases:[]},
+      {code:'1.6',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:19,subPhases:[]},
+    ],
+  },
+
+  'S-SD': {
+    code:'S-SD',
+    name:'Supaprastintas pirkimas — skelbiamos derybos',
+    totalStd:95, prepStd:20, execStd:75,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:3},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:2},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:2},
+        {code:'1.1.5',name:'Rinkos konsultacijų vykdymas',duration:2},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:5},
+        {code:'1.2.3',name:'Pirkimo dokumentų pateikimas Pirkimų komisijai (VPK)',duration:1},
+        {code:'1.2.4',name:'VPK posėdis ir sąlygų tikslinimas',duration:1},
+        {code:'1.2.5',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:2},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pirminių pasiūlymų gavimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.5',name:'Pirminių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.6',name:'Derybos',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.7',name:'Kvietimo pateikti galutinius pasiūlymus rengimas',stage:'vykdymas',duration:3,subPhases:[]},
+      {code:'1.8',name:'Galutinių pasiūlymų rengimas ir gavimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.9',name:'Galutinių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.10',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:11,subPhases:[]},
+    ],
+  },
+
+  'T-ND': {
+    code:'T-ND',
+    name:'Tarptautinis pirkimas — neskelbiamos derybos',
+    totalStd:75, prepStd:10, execStd:65,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:1},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:2},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:2},
+      ]},
+      {code:'1.3',name:'Pirminių pasiūlymų gavimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.4',name:'Pirminių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:7,subPhases:[]},
+      {code:'1.5',name:'Derybos',stage:'vykdymas',duration:8,subPhases:[]},
+      {code:'1.6',name:'Kvietimo pateikti galutinius pasiūlymus rengimas',stage:'vykdymas',duration:3,subPhases:[]},
+      {code:'1.7',name:'Galutinių pasiūlymų rengimas ir gavimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.8',name:'Galutinių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:8,subPhases:[]},
+      {code:'1.9',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:9,subPhases:[]},
+    ],
+  },
+
+  'T-AK': {
+    code:'T-AK',
+    name:'Tarptautinis pirkimas — atviras konkursas',
+    totalStd:90, prepStd:15, execStd:75,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:2},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:1},
+        {code:'1.1.5',name:'Galutinis techninės specifikacijos vertinimas',duration:1},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:4},
+        {code:'1.2.3',name:'Pirkimo dokumentų pateikimas Pirkimų komisijai (VPK)',duration:1},
+        {code:'1.2.4',name:'VPK posėdis ir tikslinimas',duration:1},
+        {code:'1.2.5',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pasiūlymų gavimas',stage:'vykdymas',duration:30,subPhases:[]},
+      {code:'1.5',name:'Pasiūlymų nagrinėjimas',stage:'vykdymas',duration:25,subPhases:[]},
+      {code:'1.6',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:19,subPhases:[]},
+    ],
+  },
+
+  'T-SD': {
+    code:'T-SD',
+    name:'Tarptautinis pirkimas — skelbiamos derybos',
+    totalStd:135, prepStd:25, execStd:110,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:4},
+        {code:'1.1.3',name:'Techninės specifikacijos vertinimas',duration:3},
+        {code:'1.1.4',name:'Techninės specifikacijos taisymas pagal pastabas',duration:2},
+        {code:'1.1.5',name:'Rinkos konsultacijų vykdymas',duration:2},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:5},
+        {code:'1.2.3',name:'Pirkimo dokumentų pateikimas Pirkimų komisijai (VPK)',duration:1},
+        {code:'1.2.4',name:'VPK posėdis ir derinimas su CPVA',duration:3},
+        {code:'1.2.5',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:3},
+      ]},
+      {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Paraiškų gavimas',stage:'vykdymas',duration:30,subPhases:[]},
+      {code:'1.5',name:'Paraiškų nagrinėjimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.6',name:'Kvietimo pateikti pirminius pasiūlymus rengimas',stage:'vykdymas',duration:3,subPhases:[]},
+      {code:'1.7',name:'Pirminių pasiūlymų gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.8',name:'Pirminių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:5,subPhases:[]},
+      {code:'1.9',name:'Derybos',stage:'vykdymas',duration:5,subPhases:[]},
+      {code:'1.10',name:'Kvietimo pateikti galutinius pasiūlymus rengimas',stage:'vykdymas',duration:3,subPhases:[]},
+      {code:'1.11',name:'Galutinių pasiūlymų rengimas ir gavimas',stage:'vykdymas',duration:14,subPhases:[]},
+      {code:'1.12',name:'Galutinių pasiūlymų nagrinėjimas',stage:'vykdymas',duration:19,subPhases:[]},
+      {code:'1.13',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:10,subPhases:[]},
+    ],
+  },
+
+  'DPS': {
+    code:'DPS',
+    name:'Dinaminė pirkimų sistema — pagrindinis pirkimas',
+    totalStd:60, prepStd:10, execStd:50,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Kvalifikacijos reikalavimų ir kategorijos verčių rengimas',duration:2},
+        {code:'1.1.3',name:'Kvalifikacijos reikalavimų vertinimas',duration:2},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:3},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Skelbimas apie DPS sukūrimą',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Paraiškų ir kvalifikacijos dokumentų gavimas',stage:'vykdymas',duration:30,subPhases:[]},
+      {code:'1.5',name:'Paraiškų nagrinėjimas ir kvalifikacijos vertinimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.6',name:'Sprendimas dėl DPS sudarymo ir tiekėjų įtraukimo',stage:'vykdymas',duration:9,subPhases:[]},
+    ],
+  },
+
+  'DPS-K': {
+    code:'DPS-K',
+    name:'Dinaminė pirkimų sistema — konkretus pirkimas',
+    totalStd:52, prepStd:7, execStd:45,
+    groups:[
+      {code:'1.1',name:'Pasirengimas pirkimui',stage:'pasirengimas',subPhases:[
+        {code:'1.1.1',name:'Užduoties užsiregistravimas',duration:1},
+        {code:'1.1.2',name:'Techninės specifikacijos rengimas',duration:2},
+      ]},
+      {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
+        {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:2},
+        {code:'1.2.3',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:1},
+      ]},
+      {code:'1.3',name:'Kvietimo pateikti pasiūlymus išsiuntimas',stage:'vykdymas',duration:1,subPhases:[]},
+      {code:'1.4',name:'Pasiūlymų gavimas',stage:'vykdymas',duration:10,subPhases:[]},
+      {code:'1.5',name:'Pasiūlymų nagrinėjimas',stage:'vykdymas',duration:15,subPhases:[]},
+      {code:'1.6',name:'Sprendimas dėl laimėjusio pasiūlymo ir sutarties sudarymas',stage:'vykdymas',duration:19,subPhases:[]},
+    ],
+  },
+};
+
+/* ---------- 3. APLIKACIJOS BŪSENA ---------- */
+const state = {
+  methodCode:null,
+  groups:[],         // gilios kopijos su current durations
+  detailLevel:'simple', // 'simple' | 'detailed'
+  startDate:null,
+  notes:{},          // { phaseCode: '...' }
+};
+
+/* ---------- 4. UI ELEMENTAI ---------- */
+const els = {
+  pavadinimas: document.getElementById('f-pavadinimas'),
+  iniciatorius: document.getElementById('f-iniciatorius'),
+  organizatorius: document.getElementById('f-organizatorius'),
+  budas: document.getElementById('f-budas'),
+  pradzia: document.getElementById('f-pradzia'),
+  priedas: document.getElementById('f-priedas'),
+  detail: document.getElementById('t-detail'),
+  phasesEmpty: document.getElementById('phases-empty'),
+  phasesContent: document.getElementById('phases-content'),
+  phasesTbody: document.getElementById('phases-tbody'),
+  tPrep: document.getElementById('t-prep'),
+  tExec: document.getElementById('t-exec'),
+  tTotal: document.getElementById('t-total'),
+  tDeviation: document.getElementById('t-deviation'),
+  tEndDate: document.getElementById('t-enddate'),
+  previewEmpty: document.getElementById('preview-empty'),
+  previewA: document.getElementById('preview-A'),
+  previewB: document.getElementById('preview-B'),
+};
+
+/* ---------- 5. EVENT LISTENERS ---------- */
+els.budas.addEventListener('change', onMethodChange);
+els.pradzia.addEventListener('change', refreshAll);
+els.pavadinimas.addEventListener('input', refreshPreview);
+els.iniciatorius.addEventListener('input', refreshPreview);
+els.organizatorius.addEventListener('input', refreshPreview);
+els.priedas.addEventListener('input', refreshPreview);
+
+els.detail.querySelectorAll('button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    els.detail.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    state.detailLevel = btn.dataset.val;
+    renderPhases();
+    refreshPreview();
+  });
+});
+
+document.querySelectorAll('.preview-tab').forEach(tab=>{
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.preview-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    showPreviewTab(tab.dataset.tab);
+  });
+});
+
+/* ---------- 6. METHOD CHANGE ---------- */
+function onMethodChange(){
+  const code = els.budas.value;
+  if(!code){
+    state.methodCode = null;
+    state.groups = [];
+    refreshAll();
+    return;
+  }
+  state.methodCode = code;
+  // Deep copy
+  state.groups = JSON.parse(JSON.stringify(METHODS[code].groups));
+  state.notes = {};
+  refreshAll();
+}
+
+/* ---------- 7. REFRESH PIPELINE ---------- */
+function refreshAll(){
+  if(!state.methodCode){
+    els.phasesEmpty.style.display='block';
+    els.phasesContent.style.display='none';
+    els.previewEmpty.style.display='block';
+    els.previewA.style.display='none';
+    els.previewB.style.display='none';
+    return;
+  }
+  els.phasesEmpty.style.display='none';
+  els.phasesContent.style.display='block';
+  renderPhases();
+  refreshPreview();
+}
+
+/* ---------- 8. PHASE CALCULATIONS ---------- */
+function getStartDate(){
+  const v = els.pradzia.value;
+  if(!v) return null;
+  const d = new Date(v + 'T00:00:00');
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function computeSchedule(){
+  // Returns array of { group, subPhases? } each with computed start/end dates
+  const start = getStartDate();
+  let cursor = start ? new Date(start) : null;
+  // Skip non-working days at start
+  if(cursor){
+    while(!isWorkingDay(cursor)){ cursor.setDate(cursor.getDate()+1); }
+  }
+  const result = [];
+  for(const g of state.groups){
+    if(g.subPhases && g.subPhases.length>0){
+      const subResults = [];
+      let groupStart = cursor ? new Date(cursor) : null;
+      let groupEnd = null;
+      for(const sp of g.subPhases){
+        const dur = Number(sp.duration) || 0;
+        if(cursor && dur>0){
+          const sStart = new Date(cursor);
+          while(!isWorkingDay(sStart)){ sStart.setDate(sStart.getDate()+1); }
+          const sEnd = addWorkingDays(sStart, dur);
+          subResults.push({ phase:sp, start:sStart, end:sEnd });
+          cursor = nextWorkingDayAfter(sEnd);
+          groupEnd = sEnd;
+        } else if(cursor && dur===0){
+          // 0 d.d. — same-day milestone: start = end = cursor (current working day)
+          const day = new Date(cursor);
+          while(!isWorkingDay(day)){ day.setDate(day.getDate()+1); }
+          subResults.push({ phase:sp, start:day, end:day });
+          // do not advance cursor for 0-duration milestone
+        } else {
+          subResults.push({ phase:sp, start:null, end:null });
+        }
+      }
+      const groupDur = g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0);
+      result.push({
+        group:g, groupDuration:groupDur,
+        subResults,
+        start:groupStart, end:groupEnd
+      });
+    } else {
+      const dur = Number(g.duration) || 0;
+      let gStart = null, gEnd = null;
+      if(cursor && dur>0){
+        gStart = new Date(cursor);
+        while(!isWorkingDay(gStart)){ gStart.setDate(gStart.getDate()+1); }
+        gEnd = addWorkingDays(gStart, dur);
+        cursor = nextWorkingDayAfter(gEnd);
+      } else if(cursor && dur===0){
+        const day = new Date(cursor);
+        while(!isWorkingDay(day)){ day.setDate(day.getDate()+1); }
+        gStart = day; gEnd = day;
+      }
+      result.push({ group:g, groupDuration:dur, subResults:null, start:gStart, end:gEnd });
+    }
+  }
+  return result;
+}
+
+/* Get standard duration for a phase (group or sub) */
+function getStandardDuration(code){
+  const m = METHODS[state.methodCode];
+  if(!m) return null;
+  for(const g of m.groups){
+    if(g.code===code){
+      if(g.subPhases && g.subPhases.length>0){
+        return g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0);
+      }
+      return Number(g.duration)||0;
+    }
+    if(g.subPhases){
+      for(const sp of g.subPhases){
+        if(sp.code===code) return Number(sp.duration)||0;
+      }
+    }
+  }
+  return null;
+}
+
+/* ---------- 9. RENDER PHASES TABLE ---------- */
+function renderPhases(){
+  const tbody = els.phasesTbody;
+  tbody.innerHTML = '';
+  const sched = computeSchedule();
+  let lastStage = null;
+  let prepDur = 0, execDur = 0;
+
+  state.groups.forEach((g, gi) => {
+    const sr = sched[gi];
+
+    // Stage header row
+    if(g.stage !== lastStage){
+      const stageRow = document.createElement('tr');
+      stageRow.className = 'stage-row';
+      stageRow.innerHTML = `<td colspan="6">${g.stage==='pasirengimas'?'Pasirengimo etapas':'Pirkimo vykdymo etapas'}</td>`;
+      tbody.appendChild(stageRow);
+      lastStage = g.stage;
+    }
+
+    const hasSubs = g.subPhases && g.subPhases.length>0;
+    const groupDur = hasSubs ? g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0) : (Number(g.duration)||0);
+    if(g.stage==='pasirengimas') prepDur += groupDur; else execDur += groupDur;
+
+    const stdDur = getStandardDuration(g.code);
+    const isModified = !hasSubs && stdDur !== null && groupDur !== stdDur;
+
+    // Group row
+    const groupRow = document.createElement('tr');
+    groupRow.className = 'group-row';
+    let durCell;
+    if(hasSubs){
+      // group sum is read-only
+      durCell = `<span style="font-weight:600">${groupDur}</span><span class="duration-suffix">d.d.</span>`;
+    } else {
+      durCell = `<input type="number" min="0" class="duration-input ${isModified?'modified':''}"
+                  data-group="${gi}" value="${groupDur}"><span class="duration-suffix">d.d.</span>`;
+      if(stdDur!==null) durCell += `<span class="duration-std">std: ${stdDur} d.d.</span>`;
+    }
+    const noteRequired = isModified;
+    const noteVal = state.notes[g.code] || '';
+    const notesCell = !hasSubs ?
+      `<textarea class="notes-input ${noteRequired?'required':''}" data-note="${g.code}"
+        placeholder="${noteRequired?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${noteVal}</textarea>`
+      : '<span style="color:var(--text-muted);font-size:11px">— sumuojamos sub-etapų pastabos</span>';
+
+    groupRow.innerHTML = `
+      <td class="col-num">${g.code}</td>
+      <td>${g.name}</td>
+      <td>${durCell}</td>
+      <td class="col-start">${fmtDateLT(sr.start)}</td>
+      <td class="col-end">${fmtDateLT(sr.end)}</td>
+      <td>${notesCell}</td>
+    `;
+    tbody.appendChild(groupRow);
+
+    // Subphase rows (detailed mode only, only if group has subs)
+    if(state.detailLevel==='detailed' && hasSubs){
+      g.subPhases.forEach((sp, si) => {
+        const subSr = sr.subResults[si];
+        const spStdDur = getStandardDuration(sp.code);
+        const spIsMod = spStdDur !== null && (Number(sp.duration)||0) !== spStdDur;
+        const subRow = document.createElement('tr');
+        subRow.className = 'subphase-row';
+        const subNoteVal = state.notes[sp.code] || '';
+        subRow.innerHTML = `
+          <td class="col-num">${sp.code}</td>
+          <td>${sp.name}</td>
+          <td>
+            <input type="number" min="0" class="duration-input ${spIsMod?'modified':''}"
+              data-group="${gi}" data-sub="${si}" value="${sp.duration}">
+            <span class="duration-suffix">d.d.</span>
+            <span class="duration-std">std: ${spStdDur} d.d.</span>
+          </td>
+          <td class="col-start">${fmtDateLT(subSr.start)}</td>
+          <td class="col-end">${fmtDateLT(subSr.end)}</td>
+          <td>
+            <textarea class="notes-input ${spIsMod?'required':''}" data-note="${sp.code}"
+              placeholder="${spIsMod?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${subNoteVal}</textarea>
+          </td>
+        `;
+        tbody.appendChild(subRow);
+      });
+    }
+  });
+
+  // Wire up duration inputs
+  tbody.querySelectorAll('.duration-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const gi = Number(inp.dataset.group);
+      const si = inp.dataset.sub !== undefined ? Number(inp.dataset.sub) : null;
+      const v = Math.max(0, Number(inp.value)||0);
+      if(si === null){
+        state.groups[gi].duration = v;
+      } else {
+        state.groups[gi].subPhases[si].duration = v;
+      }
+      renderPhases();
+      refreshPreview();
+    });
+  });
+  tbody.querySelectorAll('.notes-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      state.notes[inp.dataset.note] = inp.value;
+      refreshPreview();
+    });
+  });
+
+  // Totals
+  els.tPrep.innerHTML = `${prepDur} <span class="small">d.d.</span>`;
+  els.tExec.innerHTML = `${execDur} <span class="small">d.d.</span>`;
+  const total = prepDur + execDur;
+  els.tTotal.innerHTML = `${total} <span class="small">d.d.</span>`;
+  const std = METHODS[state.methodCode].totalStd;
+  if(total !== std){
+    const diff = total - std;
+    els.tDeviation.textContent = `Standartas ${std} d.d. (nukrypimas ${diff>0?'+':''}${diff} d.d.)`;
+  } else {
+    els.tDeviation.textContent = `Atitinka standartą (${std} d.d.)`;
+    els.tDeviation.style.color = 'var(--success)';
+  }
+  if(total !== std){ els.tDeviation.style.color = 'var(--warning)'; }
+
+  // End date
+  const lastSr = sched[sched.length-1];
+  const lastEnd = lastSr ? (lastSr.end || (lastSr.subResults && lastSr.subResults.length ? lastSr.subResults[lastSr.subResults.length-1].end : null)) : null;
+  els.tEndDate.textContent = lastEnd ? fmtDateLTLong(lastEnd) : '—';
+}
+
+/* ---------- 10. PREVIEW (Type A & Type B) ---------- */
+function refreshPreview(){
+  if(!state.methodCode){
+    els.previewEmpty.style.display='block';
+    els.previewA.style.display='none';
+    els.previewB.style.display='none';
+    return;
+  }
+  els.previewEmpty.style.display='none';
+
+  const sched = computeSchedule();
+  const m = METHODS[state.methodCode];
+  const pavadinimas = els.pavadinimas.value || '(Pirkimo pavadinimas)';
+  const iniciatorius = els.iniciatorius.value || '—';
+  const organizatorius = els.organizatorius.value || '—';
+  const start = getStartDate();
+  const startStr = start ? fmtDateLT(start) : '—';
+  const priedas = els.priedas.value;
+  const lastSr = sched[sched.length-1];
+  const lastEnd = lastSr ? (lastSr.end || (lastSr.subResults && lastSr.subResults.length ? lastSr.subResults[lastSr.subResults.length-1].end : null)) : null;
+  const totalDur = state.groups.reduce((s,g)=>{
+    if(g.subPhases && g.subPhases.length>0) return s + g.subPhases.reduce((ss,sp)=>ss+(Number(sp.duration)||0),0);
+    return s + (Number(g.duration)||0);
+  },0);
+  const today = new Date();
+
+  // ===== TYPE A =====
+  let aHtml = '';
+  aHtml += renderDocHeader('A tipo grafikas — vidinis (detalus)', priedas, today);
+  aHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
+  aHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
+  aHtml += `<div class="schedule-info">
+    <div class="schedule-info-row"><div class="schedule-info-label">Pirkimo būdas:</div><div class="schedule-info-value">${m.name} (${m.code})</div></div>
+    <div class="schedule-info-row"><div class="schedule-info-label">Pirkimo iniciatorius:</div><div class="schedule-info-value">${escapeHtml(iniciatorius)}</div></div>
+    <div class="schedule-info-row"><div class="schedule-info-label">Pirkimo organizatorius:</div><div class="schedule-info-value">${escapeHtml(organizatorius)}</div></div>
+    <div class="schedule-info-row"><div class="schedule-info-label">Pirkimo pradžios data:</div><div class="schedule-info-value">${startStr}</div></div>
+    <div class="schedule-info-row"><div class="schedule-info-label">Numatoma pabaigos data:</div><div class="schedule-info-value">${lastEnd?fmtDateLT(lastEnd):'—'}</div></div>
+    <div class="schedule-info-row"><div class="schedule-info-label">Bendra pirkimo trukmė:</div><div class="schedule-info-value">${totalDur} d.d. <span style="color:var(--text-muted)">(standartas: ${m.totalStd} d.d.)</span></div></div>
+  </div>`;
+
+  aHtml += `<table class="schedule-table"><thead><tr>
+    <th class="num">Nr.</th><th>Etapas</th><th class="duration">Trukmė d.d.</th>
+    <th class="date">Pradžia</th><th class="date">Pabaiga</th><th>Pastabos</th>
+  </tr></thead><tbody>`;
+
+  let lastStage = null;
+  state.groups.forEach((g, gi) => {
+    const sr = sched[gi];
+    if(g.stage !== lastStage){
+      aHtml += `<tr class="stage"><td colspan="6">${g.stage==='pasirengimas'?'I. Pasirengimo etapas':'II. Pirkimo vykdymo etapas'}</td></tr>`;
+      lastStage = g.stage;
+    }
+    const hasSubs = g.subPhases && g.subPhases.length>0;
+    const groupDur = hasSubs ? g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0) : (Number(g.duration)||0);
+    const stdDur = getStandardDuration(g.code);
+    const isMod = !hasSubs && stdDur !== null && groupDur !== stdDur;
+    const groupNote = state.notes[g.code] || '';
+    let noteHtml = '';
+    if(isMod && groupNote) noteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(groupNote)}</span>`;
+    else if(isMod) noteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas nuo standarto (${stdDur}→${groupDur} d.d.) — pastaba neužpildyta</span>`;
+    else if(groupNote) noteHtml = escapeHtml(groupNote);
+
+    aHtml += `<tr class="group">
+      <td class="num">${g.code}</td>
+      <td><strong>${g.name}</strong></td>
+      <td class="duration"><strong>${groupDur}</strong></td>
+      <td class="date">${fmtDateLT(sr.start)}</td>
+      <td class="date">${fmtDateLT(sr.end)}</td>
+      <td>${noteHtml}</td>
+    </tr>`;
+
+    if(state.detailLevel==='detailed' && hasSubs){
+      g.subPhases.forEach((sp, si) => {
+        const subSr = sr.subResults[si];
+        const spStd = getStandardDuration(sp.code);
+        const spIsMod = spStd !== null && (Number(sp.duration)||0) !== spStd;
+        const spNote = state.notes[sp.code] || '';
+        let spNoteHtml = '';
+        if(spIsMod && spNote) spNoteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(spNote)}</span>`;
+        else if(spIsMod) spNoteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas (${spStd}→${sp.duration} d.d.) — pastaba neužpildyta</span>`;
+        else if(spNote) spNoteHtml = escapeHtml(spNote);
+        aHtml += `<tr class="subphase">
+          <td class="num">${sp.code}</td>
+          <td>${sp.name}</td>
+          <td class="duration">${sp.duration}</td>
+          <td class="date">${fmtDateLT(subSr.start)}</td>
+          <td class="date">${fmtDateLT(subSr.end)}</td>
+          <td>${spNoteHtml}</td>
+        </tr>`;
+      });
+    }
+  });
+
+  aHtml += `<tr class="total">
+    <td colspan="2">Bendra pirkimo trukmė</td>
+    <td class="duration">${totalDur}</td>
+    <td class="date">${startStr}</td>
+    <td class="date">${lastEnd?fmtDateLT(lastEnd):'—'}</td>
+    <td></td>
+  </tr>`;
+  aHtml += `</tbody></table>`;
+
+  aHtml += `<div class="schedule-signatures">
+    <div class="signature-block">
+      <div class="role">Pirkimo organizatorius</div>
+      <div class="signature-line">${escapeHtml(organizatorius)}</div>
+    </div>
+    <div class="signature-block">
+      <div class="role">Pirkimo iniciatorius</div>
+      <div class="signature-line">${escapeHtml(iniciatorius)}</div>
+    </div>
+  </div>`;
+
+  els.previewA.innerHTML = aHtml;
+
+  // ===== TYPE B =====
+  let bHtml = '';
+  bHtml += renderDocHeader('B tipo grafikas — pirkimo dokumentų priedas (tiekėjams)', priedas, today);
+  bHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
+  bHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
+
+  bHtml += `<table class="schedule-table"><thead><tr>
+    <th class="num" style="width:50px">Eil. Nr.</th>
+    <th>Etapas</th>
+    <th class="date" style="width:160px">Preliminari pabaigos data</th>
+  </tr></thead><tbody>`;
+
+  // B grafikas — tik pirkimo vykdymo etapai (1.3 onwards)
+  let bIndex = 1;
+  state.groups.forEach((g, gi) => {
+    if(g.stage !== 'vykdymas') return;
+    const sr = sched[gi];
+    const endDate = sr.end || (sr.subResults && sr.subResults.length ? sr.subResults[sr.subResults.length-1].end : null);
+    bHtml += `<tr>
+      <td class="num">${bIndex}.</td>
+      <td>${g.name}</td>
+      <td class="date">${endDate?fmtDateLT(endDate):'—'}</td>
+    </tr>`;
+    bIndex++;
+  });
+  bHtml += `</tbody></table>`;
+  bHtml += `<p style="margin-top:18px;font-size:11px;color:var(--text-muted);font-style:italic">
+    Pastaba: pirkimo vykdytojas pasilieka teisę keisti grafike nurodytas datas, atsižvelgdamas į pirkimo procedūros eigą.
+  </p>`;
+
+  els.previewB.innerHTML = bHtml;
+
+  showPreviewTab(document.querySelector('.preview-tab.active').dataset.tab);
+}
+
+function renderDocHeader(typeLabel, priedas, today){
+  const priedasLine = priedas ? `<div>${escapeHtml(priedas)}</div>` : '';
+  return `<div class="schedule-doc-header">
+    <div class="doc-logo">
+      <svg width="34" height="34" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="#1B2960" stroke-width="2.6" stroke-linecap="round" fill="none">
+          <line x1="22" y1="3" x2="22" y2="41"/><line x1="3" y1="22" x2="41" y2="22"/>
+          <line x1="8.5" y1="8.5" x2="35.5" y2="35.5"/><line x1="35.5" y1="8.5" x2="8.5" y2="35.5"/>
+        </g>
+        <circle cx="22" cy="22" r="7" stroke="#1B2960" stroke-width="2.4" fill="none"/>
+        <circle cx="22" cy="22" r="1.7" fill="#1B2960"/>
+      </svg>
+      <div class="doc-logo-text">Litgrid</div>
+    </div>
+    <div class="schedule-doc-meta">
+      ${priedasLine}
+      <div>${typeLabel}</div>
+      <div>Sudaryta: ${fmtDateLT(today)}</div>
+    </div>
+  </div>`;
+}
+
+function showPreviewTab(t){
+  if(t==='A'){
+    els.previewA.style.display='block';
+    els.previewB.style.display='none';
+    els.previewA.classList.remove('hidden-print');
+    els.previewB.classList.add('hidden-print');
+  } else {
+    els.previewA.style.display='none';
+    els.previewB.style.display='block';
+    els.previewB.classList.remove('hidden-print');
+    els.previewA.classList.add('hidden-print');
+  }
+}
+
+/* ---------- 11. UTILS ---------- */
+function escapeHtml(s){
+  if(s===null||s===undefined) return '';
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function printSchedule(){
+  // Validate basic inputs
+  if(!state.methodCode){
+    alert('Pasirinkite pirkimo būdą prieš spausdinant.');
+    return;
+  }
+  if(!els.pradzia.value){
+    alert('Įveskite pirkimo pradžios datą prieš spausdinant.');
+    return;
+  }
+  // Check for unresolved deviation notes
+  let missing = [];
+  for(const g of state.groups){
+    if(g.subPhases && g.subPhases.length>0){
+      for(const sp of g.subPhases){
+        const std = getStandardDuration(sp.code);
+        if(std !== null && (Number(sp.duration)||0) !== std && !state.notes[sp.code]){
+          missing.push(`${sp.code} ${sp.name}`);
+        }
+      }
+    } else {
+      const std = getStandardDuration(g.code);
+      if(std !== null && (Number(g.duration)||0) !== std && !state.notes[g.code]){
+        missing.push(`${g.code} ${g.name}`);
+      }
+    }
+  }
+  if(missing.length>0){
+    const ok = confirm(`Šie etapai turi nukrypimą nuo standarto, bet pastabų laukelis tuščias:\n\n• ${missing.slice(0,5).join('\n• ')}${missing.length>5?'\n• ...':''}\n\nA tipo grafike bus rodoma „pastaba neužpildyta“ žyma. Tęsti spausdinimą?`);
+    if(!ok) return;
+  }
+  window.print();
+}
+
+function resetForm(){
+  if(!confirm('Išvalyti visus laukus?')) return;
+  els.pavadinimas.value='';
+  els.iniciatorius.value='';
+  els.organizatorius.value='';
+  els.priedas.value='';
+  els.budas.value='';
+  els.pradzia.value='';
+  state.methodCode=null;
+  state.groups=[];
+  state.notes={};
+  refreshAll();
+}
+
+/* ---------- 12. INIT ---------- */
+// Set default start date to today
+(function init(){
+  const today = new Date();
+  // If today is weekend or holiday, jump to next working day
+  let d = new Date(today);
+  while(!isWorkingDay(d)){ d.setDate(d.getDate()+1); }
+  els.pradzia.value = fmtISO(d);
+  refreshAll();
+})();
+</script>
+
+</body>
+</html>
