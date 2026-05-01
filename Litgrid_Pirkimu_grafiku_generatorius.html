@@ -670,8 +670,8 @@
     </div>
 
     <div class="preview-tabs">
-      <button class="preview-tab active" data-tab="A">A tipas — Detalus (vidinis)</button>
-      <button class="preview-tab" data-tab="B">B tipas — Sutrumpintas (tiekėjams)</button>
+      <button class="preview-tab active" data-tab="A">Detalus grafikas</button>
+      <button class="preview-tab" data-tab="B">Grafikas tiekėjams</button>
     </div>
 
     <div id="preview-empty" class="empty-state">
@@ -1404,7 +1404,7 @@ function refreshPreview(){
 
   // ===== TYPE A =====
   let aHtml = '';
-  aHtml += renderDocHeader('A tipo grafikas — vidinis (detalus)', today);
+  aHtml += renderDocHeader('Detalus grafikas', today);
   aHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
   aHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
   aHtml += `<div class="schedule-info">
@@ -1493,7 +1493,7 @@ function refreshPreview(){
 
   // ===== TYPE B =====
   let bHtml = '';
-  bHtml += renderDocHeader('B tipo grafikas — pirkimo dokumentų priedas (tiekėjams)', today);
+  bHtml += renderDocHeader('Grafikas tiekėjams', today);
   bHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
   bHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
 
