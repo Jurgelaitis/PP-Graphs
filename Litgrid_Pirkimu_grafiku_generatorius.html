@@ -604,13 +604,7 @@
           <button type="button" data-val="simple" class="active">Supaprastintas</button>
           <button type="button" data-val="detailed">Detalus</button>
         </div>
-        <span class="hint">Supaprastintas — tik pagrindiniai etapai (1.1, 1.2, 1.3...). Detalus — su VPK, CPVA ir Valdybos žingsniais.</span>
-      </div>
-
-      <div class="form-field">
-        <label>Pirkimo sąlygų priedo numeris (B grafike)</label>
-        <input type="text" id="f-priedas" placeholder="pvz. SPS 5 priedas">
-        <span class="hint">Atsispindi B tipo grafiko antraštėje (skirta tiekėjams).</span>
+        <span class="hint">Supaprastintas — tik pagrindiniai etapai (1.1, 1.2, 1.3...). Detalus — su VPK ir Valdybos žingsniais.</span>
       </div>
     </div>
   </section>
@@ -1019,10 +1013,9 @@ const METHODS = {
       ]},
       {code:'1.2',name:'Pirkimo dokumentų rengimas',stage:'pasirengimas',subPhases:[
         {code:'1.2.1',name:'Pirkimo paraiškos patvirtinimas, pirkimo kortelės iniciavimas',duration:1},
-        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:5},
+        {code:'1.2.2',name:'Pirkimo dokumentų, sąlygų rengimas ir derinimas',duration:7},
         {code:'1.2.3',name:'Pirkimo dokumentų pateikimas Pirkimų komisijai (VPK)',duration:1},
-        {code:'1.2.4',name:'VPK posėdis ir derinimas su CPVA',duration:3},
-        {code:'1.2.5',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:3},
+        {code:'1.2.4',name:'Pirkimo sąlygų galutinis patvirtinimas',duration:4},
       ]},
       {code:'1.3',name:'Skelbimas apie pirkimą',stage:'vykdymas',duration:1,subPhases:[]},
       {code:'1.4',name:'Paraiškų gavimas',stage:'vykdymas',duration:30,subPhases:[]},
@@ -1098,7 +1091,6 @@ const els = {
   organizatorius: document.getElementById('f-organizatorius'),
   budas: document.getElementById('f-budas'),
   pradzia: document.getElementById('f-pradzia'),
-  priedas: document.getElementById('f-priedas'),
   detail: document.getElementById('t-detail'),
   phasesEmpty: document.getElementById('phases-empty'),
   phasesContent: document.getElementById('phases-content'),
@@ -1119,7 +1111,6 @@ els.pradzia.addEventListener('change', refreshAll);
 els.pavadinimas.addEventListener('input', refreshPreview);
 els.iniciatorius.addEventListener('input', refreshPreview);
 els.organizatorius.addEventListener('input', refreshPreview);
-els.priedas.addEventListener('input', refreshPreview);
 
 els.detail.querySelectorAll('button').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1403,7 +1394,6 @@ function refreshPreview(){
   const organizatorius = els.organizatorius.value || '—';
   const start = getStartDate();
   const startStr = start ? fmtDateLT(start) : '—';
-  const priedas = els.priedas.value;
   const lastSr = sched[sched.length-1];
   const lastEnd = lastSr ? (lastSr.end || (lastSr.subResults && lastSr.subResults.length ? lastSr.subResults[lastSr.subResults.length-1].end : null)) : null;
   const totalDur = state.groups.reduce((s,g)=>{
@@ -1414,7 +1404,7 @@ function refreshPreview(){
 
   // ===== TYPE A =====
   let aHtml = '';
-  aHtml += renderDocHeader('A tipo grafikas — vidinis (detalus)', priedas, today);
+  aHtml += renderDocHeader('A tipo grafikas — vidinis (detalus)', today);
   aHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
   aHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
   aHtml += `<div class="schedule-info">
@@ -1503,7 +1493,7 @@ function refreshPreview(){
 
   // ===== TYPE B =====
   let bHtml = '';
-  bHtml += renderDocHeader('B tipo grafikas — pirkimo dokumentų priedas (tiekėjams)', priedas, today);
+  bHtml += renderDocHeader('B tipo grafikas — pirkimo dokumentų priedas (tiekėjams)', today);
   bHtml += `<div class="schedule-title">Pirkimo procedūrų pagrindiniai etapai</div>`;
   bHtml += `<div class="schedule-subtitle">${escapeHtml(pavadinimas)}</div>`;
 
@@ -1536,8 +1526,7 @@ function refreshPreview(){
   showPreviewTab(document.querySelector('.preview-tab.active').dataset.tab);
 }
 
-function renderDocHeader(typeLabel, priedas, today){
-  const priedasLine = priedas ? `<div>${escapeHtml(priedas)}</div>` : '';
+function renderDocHeader(typeLabel, today){
   return `<div class="schedule-doc-header">
     <div class="doc-logo">
       <svg width="34" height="34" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
@@ -1551,7 +1540,6 @@ function renderDocHeader(typeLabel, priedas, today){
       <div class="doc-logo-text">Litgrid</div>
     </div>
     <div class="schedule-doc-meta">
-      ${priedasLine}
       <div>${typeLabel}</div>
       <div>Sudaryta: ${fmtDateLT(today)}</div>
     </div>
@@ -1617,7 +1605,6 @@ function resetForm(){
   els.pavadinimas.value='';
   els.iniciatorius.value='';
   els.organizatorius.value='';
-  els.priedas.value='';
   els.budas.value='';
   els.pradzia.value='';
   state.methodCode=null;
