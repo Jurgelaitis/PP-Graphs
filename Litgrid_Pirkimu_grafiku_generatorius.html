@@ -271,6 +271,88 @@
     font-weight:600;
   }
 
+  /* ===== DELETE BTN ===== */
+  .phases-table .col-actions{width:36px;text-align:center}
+  .btn-delete-row{
+    border:none;
+    background:transparent;
+    color:var(--text-muted);
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+    width:24px;height:24px;
+    border-radius:4px;
+    transition:all .15s;
+    padding:0;
+  }
+  .btn-delete-row:hover{background:var(--danger-bg);color:var(--danger)}
+  .btn-delete-row.custom{color:var(--accent)}
+  .custom-row-flag{
+    display:inline-block;
+    background:#E8F0FE;
+    color:var(--accent);
+    font-size:9px;
+    font-weight:700;
+    padding:1px 5px;
+    border-radius:3px;
+    margin-left:6px;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    vertical-align:middle;
+  }
+
+  /* ===== ADD PHASE FORM ===== */
+  .add-phase-section{margin-top:18px}
+  .btn-add-phase{
+    border:1px dashed var(--border-strong);
+    background:#FAFBFE;
+    color:var(--text-secondary);
+    padding:10px 16px;
+    width:100%;
+    font-size:13px;
+    font-weight:600;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-family:inherit;
+    transition:all .15s;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+  }
+  .btn-add-phase:hover{border-color:var(--accent);color:var(--accent);background:#F0F4FE}
+  .btn-add-phase svg{width:14px;height:14px}
+  .add-phase-form{
+    background:#F8FAFE;
+    border:1px solid var(--border-strong);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-top:4px;
+  }
+  .add-phase-form h4{
+    margin:0 0 14px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  .add-phase-form-row{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    margin-bottom:12px;
+  }
+  .add-phase-form-row.position{grid-template-columns:1fr}
+  .add-phase-form .form-actions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px solid var(--border);
+  }
+
   /* ===== TOTALS ===== */
   .phases-totals{
     margin-top:16px;
@@ -635,10 +717,62 @@
             <th class="col-start">Pradžios data</th>
             <th class="col-end">Pabaigos data</th>
             <th class="col-notes">Pastabos / nukrypimo pagrindas</th>
+            <th class="col-actions"></th>
           </tr>
         </thead>
         <tbody id="phases-tbody"></tbody>
       </table>
+
+      <div class="add-phase-section">
+        <button type="button" class="btn-add-phase" id="btn-add-phase" onclick="showAddPhaseForm()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Pridėti papildomą etapą
+        </button>
+
+        <div class="add-phase-form" id="add-phase-form" style="display:none">
+          <h4>Pridėti naują etapą</h4>
+          <div class="add-phase-form-row">
+            <div class="form-field">
+              <label>Etapo grupė <span class="req">*</span></label>
+              <select id="add-phase-stage" onchange="updatePositionDropdown()">
+                <option value="vykdymas">Pirkimo vykdymo etapas</option>
+                <option value="pasirengimas">Pasirengimo etapas</option>
+              </select>
+            </div>
+            <div class="form-field" style="grid-column:span 2">
+              <label>Pavadinimas <span class="req">*</span></label>
+              <select id="add-phase-name" onchange="onAddPhaseNameChange()">
+                <option value="">— Pasirinkite —</option>
+                <option value="Papildomas derinimas">Papildomas derinimas</option>
+                <option value="Nagrinėjama pretenzija">Nagrinėjama pretenzija</option>
+                <option value="Teismo ieškinys">Teismo ieškinys</option>
+                <option value="Derinama su institucijomis (CVPA, VPT ir kt.)">Derinama su institucijomis (CVPA, VPT ir kt.)</option>
+                <option value="Vadovų taryba, Valdyba">Vadovų taryba, Valdyba</option>
+                <option value="Visuotinis akcininkų susirinkimo sprendimas">Visuotinis akcininkų susirinkimo sprendimas</option>
+                <option value="Nacionalinio saugumo komisijos patikra">Nacionalinio saugumo komisijos patikra</option>
+                <option value="__custom__">Kita... (rašyti ranka)</option>
+              </select>
+              <input type="text" id="add-phase-name-custom" placeholder="Įveskite etapo pavadinimą" style="display:none;margin-top:6px">
+            </div>
+            <div class="form-field">
+              <label>Trukmė (d.d.) <span class="req">*</span></label>
+              <input type="number" id="add-phase-duration" min="0" value="1">
+            </div>
+          </div>
+          <div class="add-phase-form-row position">
+            <div class="form-field">
+              <label>Įterpti</label>
+              <select id="add-phase-position">
+                <option value="end">Pabaigoje (etapo)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-ghost" onclick="cancelAddPhase()">Atšaukti</button>
+            <button type="button" class="btn btn-primary" onclick="confirmAddPhase()">Pridėti etapą</button>
+          </div>
+        </div>
+      </div>
 
       <div class="phases-totals">
         <div class="totals-block">
@@ -1082,7 +1216,18 @@ const state = {
   detailLevel:'simple', // 'simple' | 'detailed'
   startDate:null,
   notes:{},          // { phaseCode: '...' }
+  customCounter:0,   // unikaliam custom etapų ID generavimui
 };
+
+/* Display code: dinaminis numeravimas pagal poziciją (1.1, 1.2, 1.3...) */
+function getDisplayCode(group){
+  const idx = state.groups.indexOf(group);
+  if(idx<0) return group.code;
+  return `1.${idx+1}`;
+}
+function getSubDisplayCode(group, subIdx){
+  return `${getDisplayCode(group)}.${subIdx+1}`;
+}
 
 /* ---------- 4. UI ELEMENTAI ---------- */
 const els = {
@@ -1143,6 +1288,95 @@ function onMethodChange(){
   // Deep copy
   state.groups = JSON.parse(JSON.stringify(METHODS[code].groups));
   state.notes = {};
+  state.customCounter = 0;
+  cancelAddPhase();
+  refreshAll();
+}
+
+/* ---------- ADD / DELETE PHASE ---------- */
+function showAddPhaseForm(){
+  if(!state.methodCode){ alert('Pirma pasirinkite pirkimo būdą.'); return; }
+  document.getElementById('add-phase-form').style.display='block';
+  document.getElementById('btn-add-phase').style.display='none';
+  document.getElementById('add-phase-stage').value='vykdymas';
+  document.getElementById('add-phase-name').value='';
+  document.getElementById('add-phase-name-custom').style.display='none';
+  document.getElementById('add-phase-name-custom').value='';
+  document.getElementById('add-phase-duration').value=1;
+  updatePositionDropdown();
+}
+function cancelAddPhase(){
+  const f=document.getElementById('add-phase-form');
+  const b=document.getElementById('btn-add-phase');
+  if(f) f.style.display='none';
+  if(b) b.style.display='flex';
+}
+function onAddPhaseNameChange(){
+  const sel=document.getElementById('add-phase-name');
+  const customInp=document.getElementById('add-phase-name-custom');
+  customInp.style.display = sel.value==='__custom__' ? 'block' : 'none';
+}
+function updatePositionDropdown(){
+  const stage=document.getElementById('add-phase-stage').value;
+  const select=document.getElementById('add-phase-position');
+  select.innerHTML='<option value="end">Pabaigoje (etapo)</option>';
+  state.groups.forEach((g, i) => {
+    if(g.stage===stage){
+      const opt=document.createElement('option');
+      opt.value=String(i);
+      opt.textContent=`Po: ${getDisplayCode(g)} ${g.name}`;
+      select.appendChild(opt);
+    }
+  });
+}
+function confirmAddPhase(){
+  const stage=document.getElementById('add-phase-stage').value;
+  let name=document.getElementById('add-phase-name').value;
+  if(name==='__custom__'){
+    name=document.getElementById('add-phase-name-custom').value.trim();
+  }
+  if(!name){ alert('Pasirinkite arba įveskite etapo pavadinimą.'); return; }
+  const duration=Math.max(0, Number(document.getElementById('add-phase-duration').value)||0);
+  const position=document.getElementById('add-phase-position').value;
+
+  state.customCounter++;
+  const newGroup={
+    code:'_c'+Date.now()+'_'+state.customCounter,
+    name:name,
+    stage:stage,
+    duration:duration,
+    subPhases:[],
+    custom:true
+  };
+
+  if(position==='end'){
+    // Įterpti po paskutinio šio etapo grupės
+    let lastStageIdx=-1;
+    state.groups.forEach((g, i) => { if(g.stage===stage) lastStageIdx=i; });
+    if(lastStageIdx<0){
+      // Šio etapo grupių nėra — pridėti pasirengimas pradžioje, vykdymas pabaigoje
+      if(stage==='pasirengimas') state.groups.unshift(newGroup);
+      else state.groups.push(newGroup);
+    } else {
+      state.groups.splice(lastStageIdx+1, 0, newGroup);
+    }
+  } else {
+    state.groups.splice(Number(position)+1, 0, newGroup);
+  }
+
+  cancelAddPhase();
+  refreshAll();
+}
+function deletePhase(code){
+  const group=state.groups.find(g => g.code===code);
+  if(!group) return;
+  const isCustom=!!group.custom;
+  const msg = isCustom
+    ? `Pašalinti pridėtą etapą „${group.name}"?`
+    : `Pašalinti standartinį etapą „${group.name}"?\n\nSukels nukrypimą nuo standartinės procedūros (${METHODS[state.methodCode].totalStd} d.d.).`;
+  if(!confirm(msg)) return;
+  state.groups = state.groups.filter(g => g.code!==code);
+  delete state.notes[code];
   refreshAll();
 }
 
@@ -1273,7 +1507,9 @@ function renderPhases(){
     if(g.stage==='pasirengimas') prepDur += groupDur; else execDur += groupDur;
 
     const stdDur = getStandardDuration(g.code);
-    const isModified = !hasSubs && stdDur !== null && groupDur !== stdDur;
+    const isCustom = !!g.custom;
+    const isModified = !hasSubs && !isCustom && stdDur !== null && groupDur !== stdDur;
+    const dispCode = getDisplayCode(g);
 
     // Group row
     const groupRow = document.createElement('tr');
@@ -1285,7 +1521,8 @@ function renderPhases(){
     } else {
       durCell = `<input type="number" min="0" class="duration-input ${isModified?'modified':''}"
                   data-group="${gi}" value="${groupDur}"><span class="duration-suffix">d.d.</span>`;
-      if(stdDur!==null) durCell += `<span class="duration-std">std: ${stdDur} d.d.</span>`;
+      if(!isCustom && stdDur!==null) durCell += `<span class="duration-std">std: ${stdDur} d.d.</span>`;
+      if(isCustom) durCell += `<span class="duration-std">papildomas etapas</span>`;
     }
     const noteRequired = isModified;
     const noteVal = state.notes[g.code] || '';
@@ -1293,14 +1530,17 @@ function renderPhases(){
       `<textarea class="notes-input ${noteRequired?'required':''}" data-note="${g.code}"
         placeholder="${noteRequired?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${noteVal}</textarea>`
       : '<span style="color:var(--text-muted);font-size:11px">— sumuojamos sub-etapų pastabos</span>';
+    const customFlag = isCustom ? '<span class="custom-row-flag">+ Papild.</span>' : '';
+    const deleteBtn = `<button type="button" class="btn-delete-row ${isCustom?'custom':''}" data-delete="${g.code}" title="Pašalinti šį etapą">×</button>`;
 
     groupRow.innerHTML = `
-      <td class="col-num">${g.code}</td>
-      <td>${g.name}</td>
+      <td class="col-num">${dispCode}</td>
+      <td>${g.name}${customFlag}</td>
       <td>${durCell}</td>
       <td class="col-start">${fmtDateLT(sr.start)}</td>
       <td class="col-end">${fmtDateLT(sr.end)}</td>
       <td>${notesCell}</td>
+      <td class="col-actions">${deleteBtn}</td>
     `;
     tbody.appendChild(groupRow);
 
@@ -1313,8 +1553,9 @@ function renderPhases(){
         const subRow = document.createElement('tr');
         subRow.className = 'subphase-row';
         const subNoteVal = state.notes[sp.code] || '';
+        const subDispCode = getSubDisplayCode(g, si);
         subRow.innerHTML = `
-          <td class="col-num">${sp.code}</td>
+          <td class="col-num">${subDispCode}</td>
           <td>${sp.name}</td>
           <td>
             <input type="number" min="0" class="duration-input ${spIsMod?'modified':''}"
@@ -1328,6 +1569,7 @@ function renderPhases(){
             <textarea class="notes-input ${spIsMod?'required':''}" data-note="${sp.code}"
               placeholder="${spIsMod?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${subNoteVal}</textarea>
           </td>
+          <td class="col-actions"></td>
         `;
         tbody.appendChild(subRow);
       });
@@ -1355,6 +1597,9 @@ function renderPhases(){
       refreshPreview();
     });
   });
+  tbody.querySelectorAll('.btn-delete-row').forEach(btn => {
+    btn.addEventListener('click', () => deletePhase(btn.dataset.delete));
+  });
 
   // Totals
   els.tPrep.innerHTML = `${prepDur} <span class="small">d.d.</span>`;
@@ -1362,14 +1607,17 @@ function renderPhases(){
   const total = prepDur + execDur;
   els.tTotal.innerHTML = `${total} <span class="small">d.d.</span>`;
   const std = METHODS[state.methodCode].totalStd;
+  const customCount = state.groups.filter(g => g.custom).length;
   if(total !== std){
     const diff = total - std;
-    els.tDeviation.textContent = `Standartas ${std} d.d. (nukrypimas ${diff>0?'+':''}${diff} d.d.)`;
+    let msg = `Standartas ${std} d.d. (nukrypimas ${diff>0?'+':''}${diff} d.d.)`;
+    if(customCount>0) msg += ` · ${customCount} papild. etap.`;
+    els.tDeviation.textContent = msg;
+    els.tDeviation.style.color = 'var(--warning)';
   } else {
     els.tDeviation.textContent = `Atitinka standartą (${std} d.d.)`;
     els.tDeviation.style.color = 'var(--success)';
   }
-  if(total !== std){ els.tDeviation.style.color = 'var(--warning)'; }
 
   // End date
   const lastSr = sched[sched.length-1];
@@ -1431,16 +1679,22 @@ function refreshPreview(){
     const hasSubs = g.subPhases && g.subPhases.length>0;
     const groupDur = hasSubs ? g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0) : (Number(g.duration)||0);
     const stdDur = getStandardDuration(g.code);
-    const isMod = !hasSubs && stdDur !== null && groupDur !== stdDur;
+    const isCustom = !!g.custom;
+    const isMod = !hasSubs && !isCustom && stdDur !== null && groupDur !== stdDur;
     const groupNote = state.notes[g.code] || '';
     let noteHtml = '';
-    if(isMod && groupNote) noteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(groupNote)}</span>`;
+    if(isCustom && groupNote) noteHtml = escapeHtml(groupNote);
+    else if(isCustom) noteHtml = `<span style="color:var(--text-muted);font-style:italic;font-size:11px">papildomas etapas</span>`;
+    else if(isMod && groupNote) noteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(groupNote)}</span>`;
     else if(isMod) noteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas nuo standarto (${stdDur}→${groupDur} d.d.) — pastaba neužpildyta</span>`;
     else if(groupNote) noteHtml = escapeHtml(groupNote);
 
+    const dispCode = getDisplayCode(g);
+    const customMark = isCustom ? ' <span style="color:var(--accent);font-size:10px;font-weight:600">[+]</span>' : '';
+
     aHtml += `<tr class="group">
-      <td class="num">${g.code}</td>
-      <td><strong>${g.name}</strong></td>
+      <td class="num">${dispCode}</td>
+      <td><strong>${g.name}</strong>${customMark}</td>
       <td class="duration"><strong>${groupDur}</strong></td>
       <td class="date">${fmtDateLT(sr.start)}</td>
       <td class="date">${fmtDateLT(sr.end)}</td>
@@ -1458,7 +1712,7 @@ function refreshPreview(){
         else if(spIsMod) spNoteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas (${spStd}→${sp.duration} d.d.) — pastaba neužpildyta</span>`;
         else if(spNote) spNoteHtml = escapeHtml(spNote);
         aHtml += `<tr class="subphase">
-          <td class="num">${sp.code}</td>
+          <td class="num">${getSubDisplayCode(g, si)}</td>
           <td>${sp.name}</td>
           <td class="duration">${sp.duration}</td>
           <td class="date">${fmtDateLT(subSr.start)}</td>
@@ -1610,6 +1864,8 @@ function resetForm(){
   state.methodCode=null;
   state.groups=[];
   state.notes={};
+  state.customCounter=0;
+  cancelAddPhase();
   refreshAll();
 }
 
