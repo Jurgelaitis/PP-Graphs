@@ -226,8 +226,8 @@
 
   /* ===== PHASES TABLE ===== */
   .phases-info{
-    background:var(--c-cyan-5);
-    border-left:3px solid var(--c-cyan);
+    background:var(--c-graphite-5);
+    border-left:3px solid var(--c-graphite-30);
     padding:12px 16px;
     border-radius:0 var(--radius) var(--radius) 0;
     font-size:13px;
@@ -243,7 +243,7 @@
     font-size:13px;
   }
   .phases-table th{
-    background:var(--c-green-15);
+    background:var(--c-graphite-5);
     color:var(--c-graphite);
     text-align:left;
     padding:11px 14px;
@@ -251,7 +251,7 @@
     font-weight:700;
     letter-spacing:.5px;
     text-transform:uppercase;
-    border-bottom:2px solid var(--c-emerald);
+    border-bottom:1px solid var(--c-graphite-15);
   }
   .phases-table th:first-child{border-top-left-radius:var(--radius)}
   .phases-table th:last-child{border-top-right-radius:var(--radius)}
@@ -261,16 +261,16 @@
     vertical-align:top;
   }
   .phases-table tr.stage-row td{
-    background:var(--c-cyan-5);
+    background:var(--c-graphite-5);
     font-weight:700;
-    color:var(--c-emerald-120);
+    color:var(--c-graphite-50);
     text-transform:uppercase;
     font-size:11px;
     letter-spacing:.4px;
     padding:8px 14px;
   }
   .phases-table tr.group-row td{
-    background:var(--c-green-5);
+    background:#FBFBFB;
     font-weight:700;
     color:var(--c-graphite);
   }
@@ -339,8 +339,8 @@
   .btn-delete-row.custom{color:var(--c-emerald)}
   .custom-row-flag{
     display:inline-block;
-    background:var(--c-green-15);
-    color:var(--c-emerald-120);
+    background:var(--c-graphite-15);
+    color:var(--c-graphite-50);
     font-size:9px;
     font-weight:700;
     padding:2px 6px;
@@ -373,9 +373,9 @@
   .btn-add-phase:hover{border-color:var(--c-emerald);color:var(--c-emerald-120);background:var(--c-green-5)}
   .btn-add-phase svg{width:14px;height:14px}
   .add-phase-form{
-    background:var(--c-green-5);
-    border:1px solid var(--c-green-15);
-    border-left:3px solid var(--c-emerald);
+    background:var(--c-graphite-5);
+    border:1px solid var(--c-graphite-15);
+    border-left:3px solid var(--c-graphite-30);
     border-radius:var(--radius);
     padding:22px 24px;
     margin-top:4px;
@@ -408,9 +408,8 @@
   .phases-totals{
     margin-top:20px;
     padding:18px 22px;
-    background:var(--c-green-5);
-    border:1px solid var(--c-green-15);
-    border-left:3px solid var(--c-emerald);
+    background:var(--c-graphite-5);
+    border:1px solid var(--c-graphite-15);
     border-radius:var(--radius);
     display:flex;
     align-items:center;
@@ -424,7 +423,7 @@
   .totals-value .small{font-size:13px;font-weight:500;color:var(--text-secondary);margin-left:4px}
   .totals-deviation{
     font-size:12px;
-    color:var(--c-emerald-120);
+    color:var(--c-graphite-50);
     font-weight:700;
   }
 
@@ -515,7 +514,7 @@
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    border-bottom:2px solid var(--c-emerald);
+    border-bottom:1px solid var(--c-graphite-30);
     padding-bottom:16px;
     margin-bottom:20px;
   }
@@ -554,7 +553,7 @@
     font-size:12px;
   }
   .schedule-table th{
-    background:var(--c-green-15);
+    background:var(--c-graphite-5);
     color:var(--c-graphite);
     padding:9px 11px;
     text-align:left;
@@ -563,7 +562,6 @@
     letter-spacing:.4px;
     font-weight:700;
     border:1px solid var(--c-graphite-15);
-    border-bottom:2px solid var(--c-emerald);
   }
   .schedule-table td{
     padding:8px 11px;
@@ -573,10 +571,10 @@
   .schedule-table .num{width:48px;text-align:center;font-variant-numeric:tabular-nums;color:var(--text-secondary);font-weight:600}
   .schedule-table .date{width:110px;font-variant-numeric:tabular-nums;white-space:nowrap}
   .schedule-table .duration{width:80px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
-  .schedule-table tr.stage td{background:var(--c-cyan-5);font-weight:700;color:var(--c-emerald-120);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
-  .schedule-table tr.group td{background:var(--c-green-5);font-weight:700;color:var(--c-graphite)}
+  .schedule-table tr.stage td{background:var(--c-graphite-5);font-weight:700;color:var(--c-graphite-50);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
+  .schedule-table tr.group td{background:#FBFBFB;font-weight:700;color:var(--c-graphite)}
   .schedule-table tr.subphase td:nth-child(2){padding-left:26px;color:var(--text-secondary)}
-  .schedule-table tr.total td{background:var(--c-emerald);color:#fff;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px;border-color:var(--c-emerald-120)}
+  .schedule-table tr.total td{background:var(--c-graphite);color:#fff;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px;border-color:var(--c-graphite)}
   .schedule-notes-cell{font-size:11px;color:var(--warning);font-style:italic}
   /* ===== GANTT ===== */
   .schedule-gantt-section{
@@ -591,7 +589,7 @@
     letter-spacing:.6px;
     margin:0 0 12px;
     padding-bottom:8px;
-    border-bottom:1px solid var(--c-emerald);
+    border-bottom:1px solid var(--c-graphite-15);
   }
   .schedule-gantt-svg{
     width:100%;
@@ -670,25 +668,24 @@
     .schedule-table th{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--c-green-15) !important;
+      background:var(--c-graphite-5) !important;
       color:var(--c-graphite) !important;
-      border-bottom:2px solid var(--c-emerald) !important;
     }
     .schedule-table tr.stage td{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--c-cyan-5) !important;
-      color:var(--c-emerald-120) !important;
+      background:var(--c-graphite-5) !important;
+      color:var(--c-graphite-50) !important;
     }
     .schedule-table tr.group td{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--c-green-5) !important;
+      background:#FBFBFB !important;
     }
     .schedule-table tr.total td{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--c-emerald) !important;
+      background:var(--c-graphite) !important;
       color:#fff !important;
     }
     .schedule-doc-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -738,7 +735,27 @@
 
       <div class="form-field">
         <label>Pirkimo organizatorius <span class="req">*</span></label>
-        <input type="text" id="f-organizatorius" placeholder="Vardas Pavardė, Pirkimų sk.">
+        <select id="f-organizatorius-select" onchange="onOrganizatoriusChange()">
+          <option value="">— Pasirinkite organizatorių —</option>
+          <optgroup label="A. Stankevičienės grupė">
+            <option>Agnietė Stankevičienė, grupės vadovė</option>
+            <option>Šarūnas Jurėnas, pirkimų projektų vadovas</option>
+            <option>Rita Kubilienė, pirkimų projektų vadovė</option>
+            <option>Jovita Buterlevičiūtė, pirkimų projektų vadovė</option>
+            <option>Viktorija Jakovleva-Ogut, pirkimų projektų vadovė</option>
+            <option>Sonata Vainauskaitė, pirkimų projektų vadovė</option>
+          </optgroup>
+          <optgroup label="E. Kazakevičienės grupė">
+            <option>Edita Kazakevičienė, grupės vadovė</option>
+            <option>Monika Puidokė, pirkimų vadovė</option>
+            <option>Rugilė Endzinaitė, pirkimų projektų vadovė</option>
+            <option>Jurgita Latvė, pirkimų projektų vadovė</option>
+            <option>Arūnas Gvozdas, pirkimų projektų vadovas</option>
+            <option>Karolina Virvičienė, pirkimų projektų vadovė</option>
+          </optgroup>
+          <option value="__other__">Kita (įrašyti ranka)</option>
+        </select>
+        <input type="text" id="f-organizatorius" placeholder="Vardas Pavardė, Pirkimų sk." style="display:none;margin-top:6px">
       </div>
 
       <div class="form-field">
@@ -1398,6 +1415,21 @@ document.querySelectorAll('.preview-tab').forEach(tab=>{
     showPreviewTab(tab.dataset.tab);
   });
 });
+
+/* ---------- ORGANIZATORIAUS PASIRINKIMAS ---------- */
+function onOrganizatoriusChange(){
+  const sel = document.getElementById('f-organizatorius-select');
+  const inp = document.getElementById('f-organizatorius');
+  if(sel.value === '__other__'){
+    inp.style.display = 'block';
+    inp.value = '';
+    inp.focus();
+  } else {
+    inp.style.display = 'none';
+    inp.value = sel.value || '';
+  }
+  refreshPreview();
+}
 
 /* ---------- 6. METHOD CHANGE ---------- */
 function onMethodChange(){
@@ -2267,6 +2299,9 @@ function resetForm(){
   els.pavadinimas.value='';
   els.iniciatorius.value='';
   els.organizatorius.value='';
+  const orgSel = document.getElementById('f-organizatorius-select');
+  if(orgSel){ orgSel.value=''; orgSel.style.display='block'; }
+  els.organizatorius.style.display='none';
   els.budas.value='';
   els.pradzia.value='';
   state.methodCode=null;
