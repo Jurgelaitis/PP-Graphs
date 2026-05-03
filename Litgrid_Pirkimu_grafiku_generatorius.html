@@ -4,123 +4,168 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Litgrid — Pirkimų grafikų generatorius</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#1B2960;
-    --navy-dark:#0F1A40;
-    --navy-light:#2E3D75;
-    --accent:#4A6BCC;
-    --bg:#F4F6FC;
-    --bg-alt:#EAEEF8;
-    --border:#DCE2F0;
-    --border-strong:#B8C2DE;
-    --success:#1F7A4D;
-    --success-bg:#E5F4EC;
+    /* EPSO-G brandbook paletė */
+    --c-emerald:#00A072;
+    --c-emerald-50:#16C492;
+    --c-emerald-120:#128A76;
+    --c-graphite:#2E3641;
+    --c-graphite-50:#737483;
+    --c-graphite-30:#C7CDD3;
+    --c-graphite-15:#E1E2E4;
+    --c-graphite-5:#EFF1F1;
+    --c-green-15:#D7EEDB;
+    --c-green-5:#EFF9F1;
+    --c-cyan-5:#E8F7F9;
+    --c-blue:#00667D;
+    --c-cyan:#00A5C4;
+    --c-lime:#85BC28;
+    --c-green:#459D54;
+    --c-error:#DB354A;
+    --c-warning:#FAB03B;
+
+    /* Litgrid brand */
+    --litgrid-navy:#0F2D46;
+
+    /* Semantiniai */
+    --navy:var(--c-emerald);
+    --navy-dark:var(--c-emerald-120);
+    --navy-light:var(--c-emerald-50);
+    --accent:var(--c-emerald);
+    --bg:var(--c-graphite-5);
+    --bg-alt:var(--c-green-5);
+    --border:var(--c-graphite-15);
+    --border-strong:var(--c-graphite-30);
+    --success:var(--c-green);
+    --success-bg:var(--c-green-15);
     --warning:#9C5E0F;
-    --warning-bg:#FBF3DD;
-    --danger:#A6262C;
-    --danger-bg:#FCE7E8;
-    --text:#16213A;
-    --text-secondary:#4A5573;
-    --text-muted:#7B86A4;
-    --shadow-sm:0 1px 2px rgba(15,26,64,.06),0 1px 1px rgba(15,26,64,.04);
-    --shadow-md:0 4px 12px rgba(15,26,64,.08),0 2px 4px rgba(15,26,64,.04);
-    --radius:6px;
+    --warning-bg:#FEF3DD;
+    --danger:var(--c-error);
+    --danger-bg:#FCE7E9;
+    --text:var(--c-graphite);
+    --text-secondary:var(--c-graphite-50);
+    --text-muted:#9AA1AB;
+
+    --shadow-sm:0 1px 2px rgba(46,54,65,.04),0 1px 1px rgba(46,54,65,.03);
+    --shadow-md:0 4px 12px rgba(46,54,65,.06),0 2px 4px rgba(46,54,65,.04);
+    --shadow-lg:0 8px 24px rgba(46,54,65,.08);
+
+    --radius:8px;
+    --radius-md:12px;
+    --radius-lg:16px;
+
+    --font-base:"Nunito Sans","Inter",Arial,sans-serif;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Inter",Roboto,Helvetica,Arial,sans-serif;
+    font-family:var(--font-base);
     background:var(--bg);
     color:var(--text);
     font-size:14px;
     line-height:1.55;
     -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
   }
 
   /* ===== HEADER ===== */
   .app-header{
     background:#fff;
     border-bottom:1px solid var(--border);
-    padding:18px 32px;
+    padding:20px 40px;
     display:flex;
     align-items:center;
-    gap:18px;
-    box-shadow:var(--shadow-sm);
+    gap:24px;
   }
-  .logo-mark{flex-shrink:0}
+  .brand-block{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-shrink:0;
+  }
+  .logo-mark{
+    width:34px;
+    height:34px;
+    flex-shrink:0;
+  }
   .logo-text{
     font-size:22px;
     font-weight:700;
-    color:var(--navy);
-    letter-spacing:-.4px;
+    color:var(--litgrid-navy);
+    letter-spacing:-.5px;
+    font-family:var(--font-base);
   }
   .app-title{
     flex:1;
     border-left:1px solid var(--border);
-    padding-left:18px;
-    margin-left:6px;
+    padding-left:24px;
   }
   .app-title h1{
     margin:0;
-    font-size:15px;
-    font-weight:600;
-    color:var(--text);
+    font-size:16px;
+    font-weight:700;
+    color:var(--c-graphite);
     letter-spacing:.1px;
   }
   .app-title p{
-    margin:2px 0 0;
-    font-size:12px;
-    color:var(--text-muted);
+    margin:3px 0 0;
+    font-size:13px;
+    color:var(--text-secondary);
+    font-weight:400;
   }
   .header-meta{
     font-size:11px;
     color:var(--text-muted);
     text-align:right;
-    line-height:1.4;
+    line-height:1.5;
+    font-weight:400;
   }
 
   /* ===== LAYOUT ===== */
-  .container{max-width:1320px;margin:0 auto;padding:24px 32px 60px}
+  .container{max-width:1280px;margin:0 auto;padding:32px 40px 64px}
   .card{
     background:#fff;
     border:1px solid var(--border);
-    border-radius:8px;
-    padding:24px 28px;
-    margin-bottom:20px;
+    border-radius:var(--radius-md);
+    padding:28px 32px;
+    margin-bottom:24px;
     box-shadow:var(--shadow-sm);
   }
   .card-header{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    margin:-2px 0 16px;
-    padding-bottom:14px;
+    margin:-4px 0 20px;
+    padding-bottom:16px;
     border-bottom:1px solid var(--border);
   }
   .card-title{
     margin:0;
-    font-size:15px;
-    font-weight:600;
-    color:var(--navy);
-    letter-spacing:.2px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--c-graphite);
+    letter-spacing:.4px;
     text-transform:uppercase;
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:12px;
   }
   .card-title .step-num{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    width:22px;height:22px;
-    background:var(--navy);
+    width:24px;height:24px;
+    background:var(--c-emerald);
     color:#fff;
     border-radius:50%;
-    font-size:11px;
+    font-size:12px;
     font-weight:700;
   }
-  .card-subtitle{font-size:12px;color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0}
+  .card-subtitle{font-size:13px;color:var(--text-secondary);font-weight:400;text-transform:none;letter-spacing:0}
 
   /* ===== FORM ===== */
   .form-grid{
@@ -142,17 +187,17 @@
   .form-field input,.form-field select,.form-field textarea{
     border:1px solid var(--border-strong);
     border-radius:var(--radius);
-    padding:8px 10px;
-    font-size:13px;
+    padding:10px 12px;
+    font-size:14px;
     color:var(--text);
     background:#fff;
     font-family:inherit;
-    transition:border-color .15s,box-shadow .15s;
+    transition:border-color 180ms ease,box-shadow 180ms ease;
   }
   .form-field input:focus,.form-field select:focus,.form-field textarea:focus{
     outline:none;
-    border-color:var(--accent);
-    box-shadow:0 0 0 3px rgba(74,107,204,.12);
+    border-color:var(--c-emerald);
+    box-shadow:0 0 0 3px rgba(0,160,114,.15);
   }
   .form-field .hint{font-size:11px;color:var(--text-muted);margin-top:4px}
   .form-field input[type=date]{font-family:inherit}
@@ -167,30 +212,30 @@
   }
   .toggle-group button{
     border:none;background:transparent;
-    padding:6px 14px;
-    font-size:12px;
+    padding:7px 16px;
+    font-size:13px;
     font-weight:600;
     color:var(--text-secondary);
     cursor:pointer;
-    border-radius:4px;
+    border-radius:6px;
     font-family:inherit;
-    transition:all .15s;
+    transition:all 180ms ease;
   }
-  .toggle-group button.active{background:var(--navy);color:#fff;box-shadow:var(--shadow-sm)}
-  .toggle-group button:not(.active):hover{color:var(--navy)}
+  .toggle-group button.active{background:var(--c-emerald);color:#fff;box-shadow:var(--shadow-sm)}
+  .toggle-group button:not(.active):hover{color:var(--c-emerald-120)}
 
   /* ===== PHASES TABLE ===== */
   .phases-info{
-    background:var(--bg-alt);
-    border-left:3px solid var(--accent);
-    padding:10px 14px;
+    background:var(--c-cyan-5);
+    border-left:3px solid var(--c-cyan);
+    padding:12px 16px;
     border-radius:0 var(--radius) var(--radius) 0;
-    font-size:12px;
-    color:var(--text-secondary);
-    margin-bottom:16px;
-    line-height:1.5;
+    font-size:13px;
+    color:var(--c-graphite);
+    margin-bottom:18px;
+    line-height:1.55;
   }
-  .phases-info strong{color:var(--navy)}
+  .phases-info strong{color:var(--c-graphite);font-weight:700}
   .phases-table{
     width:100%;
     border-collapse:separate;
@@ -198,34 +243,36 @@
     font-size:13px;
   }
   .phases-table th{
-    background:var(--navy);
-    color:#fff;
+    background:var(--c-green-15);
+    color:var(--c-graphite);
     text-align:left;
-    padding:10px 12px;
+    padding:11px 14px;
     font-size:11px;
-    font-weight:600;
+    font-weight:700;
     letter-spacing:.5px;
     text-transform:uppercase;
+    border-bottom:2px solid var(--c-emerald);
   }
   .phases-table th:first-child{border-top-left-radius:var(--radius)}
   .phases-table th:last-child{border-top-right-radius:var(--radius)}
   .phases-table td{
-    padding:8px 12px;
+    padding:9px 14px;
     border-bottom:1px solid var(--border);
     vertical-align:top;
   }
   .phases-table tr.stage-row td{
-    background:linear-gradient(0deg,var(--bg-alt),var(--bg-alt));
+    background:var(--c-cyan-5);
     font-weight:700;
-    color:var(--navy);
+    color:var(--c-emerald-120);
     text-transform:uppercase;
     font-size:11px;
     letter-spacing:.4px;
-    padding:7px 12px;
+    padding:8px 14px;
   }
   .phases-table tr.group-row td{
-    background:#FAFBFE;
-    font-weight:600;
+    background:var(--c-green-5);
+    font-weight:700;
+    color:var(--c-graphite);
   }
   .phases-table tr.subphase-row td:nth-child(2){padding-left:32px}
   .phases-table .col-num{width:55px;font-variant-numeric:tabular-nums;color:var(--text-muted);font-weight:500}
@@ -233,33 +280,36 @@
   .phases-table .col-start,.phases-table .col-end{width:120px;font-variant-numeric:tabular-nums}
   .phases-table .col-notes{width:32%}
   .duration-input{
-    width:60px;
-    padding:5px 7px;
+    width:64px;
+    padding:6px 8px;
     border:1px solid var(--border-strong);
-    border-radius:4px;
+    border-radius:6px;
     font-size:13px;
     text-align:center;
     font-variant-numeric:tabular-nums;
     font-family:inherit;
+    font-weight:600;
+    color:var(--c-graphite);
   }
-  .duration-input.modified{border-color:var(--warning);background:var(--warning-bg)}
-  .duration-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,107,204,.12)}
-  .duration-suffix{margin-left:4px;font-size:11px;color:var(--text-muted)}
-  .duration-std{font-size:10px;color:var(--text-muted);display:block;margin-top:2px}
+  .duration-input.modified{border-color:var(--c-warning);background:#FEF3DD}
+  .duration-input:focus{outline:none;border-color:var(--c-emerald);box-shadow:0 0 0 3px rgba(0,160,114,.15)}
+  .duration-suffix{margin-left:5px;font-size:11px;color:var(--text-secondary);font-weight:500}
+  .duration-std{font-size:10px;color:var(--text-muted);display:block;margin-top:3px}
   .notes-input{
     width:100%;
     border:1px solid var(--border);
-    border-radius:4px;
-    padding:5px 7px;
+    border-radius:6px;
+    padding:6px 9px;
     font-size:12px;
     font-family:inherit;
     resize:vertical;
-    min-height:32px;
-    line-height:1.4;
+    min-height:34px;
+    line-height:1.45;
+    color:var(--c-graphite);
   }
-  .notes-input.required{border-color:var(--warning);background:#FFFCF2}
-  .notes-input.required::placeholder{color:var(--warning);font-weight:500}
-  .notes-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(74,107,204,.12)}
+  .notes-input.required{border-color:var(--c-warning);background:#FEF8E5}
+  .notes-input.required::placeholder{color:#9C5E0F;font-weight:600}
+  .notes-input:focus{outline:none;border-color:var(--c-emerald);box-shadow:0 0 0 3px rgba(0,160,114,.15)}
   .holiday-flag{
     display:inline-block;
     margin-left:6px;
@@ -278,64 +328,65 @@
     background:transparent;
     color:var(--text-muted);
     cursor:pointer;
-    font-size:16px;
+    font-size:18px;
     line-height:1;
-    width:24px;height:24px;
-    border-radius:4px;
-    transition:all .15s;
+    width:26px;height:26px;
+    border-radius:6px;
+    transition:all 180ms ease;
     padding:0;
   }
-  .btn-delete-row:hover{background:var(--danger-bg);color:var(--danger)}
-  .btn-delete-row.custom{color:var(--accent)}
+  .btn-delete-row:hover{background:var(--danger-bg);color:var(--c-error)}
+  .btn-delete-row.custom{color:var(--c-emerald)}
   .custom-row-flag{
     display:inline-block;
-    background:#E8F0FE;
-    color:var(--accent);
+    background:var(--c-green-15);
+    color:var(--c-emerald-120);
     font-size:9px;
     font-weight:700;
-    padding:1px 5px;
+    padding:2px 6px;
     border-radius:3px;
-    margin-left:6px;
+    margin-left:8px;
     text-transform:uppercase;
     letter-spacing:.4px;
     vertical-align:middle;
   }
 
   /* ===== ADD PHASE FORM ===== */
-  .add-phase-section{margin-top:18px}
+  .add-phase-section{margin-top:20px}
   .btn-add-phase{
-    border:1px dashed var(--border-strong);
-    background:#FAFBFE;
+    border:1px dashed var(--c-graphite-30);
+    background:var(--c-graphite-5);
     color:var(--text-secondary);
-    padding:10px 16px;
+    padding:12px 18px;
     width:100%;
-    font-size:13px;
+    font-size:14px;
     font-weight:600;
     border-radius:var(--radius);
     cursor:pointer;
     font-family:inherit;
-    transition:all .15s;
+    transition:all 180ms ease;
     display:flex;
     align-items:center;
     justify-content:center;
     gap:8px;
   }
-  .btn-add-phase:hover{border-color:var(--accent);color:var(--accent);background:#F0F4FE}
+  .btn-add-phase:hover{border-color:var(--c-emerald);color:var(--c-emerald-120);background:var(--c-green-5)}
   .btn-add-phase svg{width:14px;height:14px}
   .add-phase-form{
-    background:#F8FAFE;
-    border:1px solid var(--border-strong);
+    background:var(--c-green-5);
+    border:1px solid var(--c-green-15);
+    border-left:3px solid var(--c-emerald);
     border-radius:var(--radius);
-    padding:18px 20px;
+    padding:22px 24px;
     margin-top:4px;
   }
   .add-phase-form h4{
-    margin:0 0 14px;
+    margin:0 0 16px;
     font-size:13px;
     font-weight:700;
-    color:var(--navy);
+    color:var(--c-graphite);
     text-transform:uppercase;
-    letter-spacing:.4px;
+    letter-spacing:.5px;
   }
   .add-phase-form-row{
     display:grid;
@@ -355,10 +406,11 @@
 
   /* ===== TOTALS ===== */
   .phases-totals{
-    margin-top:16px;
-    padding:14px 18px;
-    background:linear-gradient(135deg,#F0F4FE,#E6ECFA);
-    border:1px solid var(--border-strong);
+    margin-top:20px;
+    padding:18px 22px;
+    background:var(--c-green-5);
+    border:1px solid var(--c-green-15);
+    border-left:3px solid var(--c-emerald);
     border-radius:var(--radius);
     display:flex;
     align-items:center;
@@ -366,14 +418,14 @@
     gap:24px;
     flex-wrap:wrap;
   }
-  .totals-block{display:flex;flex-direction:column;gap:2px}
-  .totals-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;font-weight:600;letter-spacing:.4px}
-  .totals-value{font-size:18px;font-weight:700;color:var(--navy);font-variant-numeric:tabular-nums}
+  .totals-block{display:flex;flex-direction:column;gap:3px}
+  .totals-label{font-size:11px;color:var(--text-secondary);text-transform:uppercase;font-weight:700;letter-spacing:.5px}
+  .totals-value{font-size:20px;font-weight:800;color:var(--c-graphite);font-variant-numeric:tabular-nums}
   .totals-value .small{font-size:13px;font-weight:500;color:var(--text-secondary);margin-left:4px}
   .totals-deviation{
     font-size:12px;
-    color:var(--warning);
-    font-weight:600;
+    color:var(--c-emerald-120);
+    font-weight:700;
   }
 
   /* ===== ACTION BAR ===== */
@@ -383,38 +435,38 @@
     z-index:10;
     background:#fff;
     border:1px solid var(--border-strong);
-    border-radius:8px;
-    padding:14px 22px;
+    border-radius:var(--radius-md);
+    padding:16px 24px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:18px;
-    box-shadow:0 8px 24px rgba(15,26,64,.12);
+    box-shadow:var(--shadow-lg);
   }
-  .action-bar-info{font-size:12px;color:var(--text-secondary)}
-  .action-bar-info strong{color:var(--navy)}
+  .action-bar-info{font-size:13px;color:var(--text-secondary)}
+  .action-bar-info strong{color:var(--c-graphite);font-weight:700}
   .action-buttons{display:flex;gap:10px;flex-wrap:wrap}
   .btn{
-    border:1px solid var(--navy);
+    border:1px solid var(--c-emerald);
     background:#fff;
-    color:var(--navy);
-    padding:8px 16px;
+    color:var(--c-emerald);
+    padding:9px 18px;
     font-size:13px;
-    font-weight:600;
+    font-weight:700;
     border-radius:var(--radius);
     cursor:pointer;
     font-family:inherit;
     display:inline-flex;
     align-items:center;
     gap:7px;
-    transition:all .15s;
+    transition:all 180ms ease;
     letter-spacing:.1px;
   }
-  .btn:hover{background:var(--bg-alt)}
-  .btn-primary{background:var(--navy);color:#fff}
-  .btn-primary:hover{background:var(--navy-dark)}
-  .btn-ghost{border-color:var(--border-strong);color:var(--text-secondary)}
-  .btn-ghost:hover{border-color:var(--navy);color:var(--navy);background:#fff}
+  .btn:hover{background:var(--c-green-5)}
+  .btn-primary{background:var(--c-emerald);color:#fff;border-color:var(--c-emerald)}
+  .btn-primary:hover{background:var(--c-emerald-120);border-color:var(--c-emerald-120)}
+  .btn-ghost{border-color:var(--border-strong);color:var(--text-secondary);background:#fff}
+  .btn-ghost:hover{border-color:var(--c-emerald);color:var(--c-emerald);background:var(--c-green-5)}
   .btn svg{width:14px;height:14px}
 
   /* ===== PREVIEW ===== */
@@ -427,122 +479,124 @@
   .preview-tab{
     border:none;
     background:transparent;
-    padding:9px 18px;
-    font-size:13px;
+    padding:11px 20px;
+    font-size:14px;
     font-weight:600;
-    color:var(--text-muted);
+    color:var(--text-secondary);
     cursor:pointer;
     border-bottom:2px solid transparent;
     margin-bottom:-2px;
     font-family:inherit;
-    letter-spacing:.2px;
+    letter-spacing:.1px;
+    transition:color 180ms ease;
   }
-  .preview-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
-  .preview-tab:hover:not(.active){color:var(--text-secondary)}
+  .preview-tab.active{color:var(--c-emerald);border-bottom-color:var(--c-emerald)}
+  .preview-tab:hover:not(.active){color:var(--c-emerald-120)}
   .preview-tab .badge{
     display:inline-block;
-    background:var(--bg-alt);
-    color:var(--text-secondary);
+    background:var(--c-green-5);
+    color:var(--c-graphite);
     padding:1px 7px;
     border-radius:10px;
     font-size:10px;
     margin-left:6px;
     font-weight:700;
   }
-  .preview-tab.active .badge{background:var(--navy);color:#fff}
+  .preview-tab.active .badge{background:var(--c-emerald);color:#fff}
 
   .schedule-doc{
     background:#fff;
     border:1px solid var(--border);
-    padding:32px 40px;
-    border-radius:var(--radius);
+    padding:36px 44px;
+    border-radius:var(--radius-md);
     font-size:13px;
   }
   .schedule-doc-header{
     display:flex;
     justify-content:space-between;
     align-items:flex-start;
-    border-bottom:2px solid var(--navy);
-    padding-bottom:14px;
-    margin-bottom:18px;
+    border-bottom:2px solid var(--c-emerald);
+    padding-bottom:16px;
+    margin-bottom:20px;
   }
   .schedule-doc-header .doc-logo{display:flex;align-items:center;gap:10px}
-  .schedule-doc-header .doc-logo .doc-logo-text{font-size:18px;font-weight:700;color:var(--navy)}
-  .schedule-doc-meta{font-size:11px;color:var(--text-muted);text-align:right;line-height:1.5}
+  .schedule-doc-header .doc-logo .doc-logo-text{font-size:18px;font-weight:700;color:var(--litgrid-navy);letter-spacing:-.4px}
+  .schedule-doc-meta{font-size:11px;color:var(--text-secondary);text-align:right;line-height:1.6}
   .schedule-title{
     text-align:center;
-    margin:18px 0 6px;
-    font-size:15px;
+    margin:20px 0 6px;
+    font-size:16px;
     font-weight:700;
     text-transform:uppercase;
-    letter-spacing:1.4px;
-    color:var(--navy);
+    letter-spacing:1.6px;
+    color:var(--c-graphite);
   }
   .schedule-subtitle{
     text-align:center;
     font-size:13px;
     color:var(--text-secondary);
-    margin-bottom:22px;
+    margin-bottom:24px;
     font-style:italic;
   }
   .schedule-info{
     display:grid;
     grid-template-columns:repeat(2,1fr);
-    gap:6px 24px;
-    margin-bottom:22px;
+    gap:6px 28px;
+    margin-bottom:24px;
     font-size:12px;
   }
-  .schedule-info-row{display:flex;gap:10px;padding:5px 0;border-bottom:1px dotted var(--border)}
-  .schedule-info-label{font-weight:600;color:var(--text-secondary);min-width:160px}
-  .schedule-info-value{color:var(--text);flex:1}
+  .schedule-info-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px dotted var(--border)}
+  .schedule-info-label{font-weight:700;color:var(--text-secondary);min-width:170px}
+  .schedule-info-value{color:var(--c-graphite);flex:1}
   .schedule-table{
     width:100%;
     border-collapse:collapse;
     font-size:12px;
   }
   .schedule-table th{
-    background:var(--navy);
-    color:#fff;
-    padding:8px 10px;
+    background:var(--c-green-15);
+    color:var(--c-graphite);
+    padding:9px 11px;
     text-align:left;
     font-size:11px;
     text-transform:uppercase;
     letter-spacing:.4px;
-    font-weight:600;
-    border:1px solid var(--navy-dark);
+    font-weight:700;
+    border:1px solid var(--c-graphite-15);
+    border-bottom:2px solid var(--c-emerald);
   }
   .schedule-table td{
-    padding:7px 10px;
-    border:1px solid var(--border-strong);
+    padding:8px 11px;
+    border:1px solid var(--border);
     vertical-align:top;
   }
-  .schedule-table .num{width:40px;text-align:center;font-variant-numeric:tabular-nums;color:var(--text-muted)}
+  .schedule-table .num{width:48px;text-align:center;font-variant-numeric:tabular-nums;color:var(--text-secondary);font-weight:600}
   .schedule-table .date{width:110px;font-variant-numeric:tabular-nums;white-space:nowrap}
-  .schedule-table .duration{width:80px;text-align:center;font-variant-numeric:tabular-nums}
-  .schedule-table tr.stage td{background:var(--bg-alt);font-weight:700;color:var(--navy);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
-  .schedule-table tr.group td{background:#F8FAFE;font-weight:600}
-  .schedule-table tr.subphase td:nth-child(2){padding-left:24px;color:var(--text-secondary)}
-  .schedule-table tr.total td{background:var(--navy);color:#fff;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px}
+  .schedule-table .duration{width:80px;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+  .schedule-table tr.stage td{background:var(--c-cyan-5);font-weight:700;color:var(--c-emerald-120);text-transform:uppercase;font-size:11px;letter-spacing:.4px}
+  .schedule-table tr.group td{background:var(--c-green-5);font-weight:700;color:var(--c-graphite)}
+  .schedule-table tr.subphase td:nth-child(2){padding-left:26px;color:var(--text-secondary)}
+  .schedule-table tr.total td{background:var(--c-emerald);color:#fff;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.4px;border-color:var(--c-emerald-120)}
   .schedule-notes-cell{font-size:11px;color:var(--warning);font-style:italic}
   /* ===== GANTT ===== */
   .schedule-gantt-section{
-    margin-top:28px;
+    margin-top:32px;
     page-break-inside:avoid;
   }
   .schedule-gantt-title{
     font-size:13px;
     font-weight:700;
-    color:var(--navy);
+    color:var(--c-graphite);
     text-transform:uppercase;
     letter-spacing:.6px;
-    margin:0 0 10px;
-    padding-bottom:6px;
-    border-bottom:1px solid var(--border);
+    margin:0 0 12px;
+    padding-bottom:8px;
+    border-bottom:1px solid var(--c-emerald);
   }
   .schedule-gantt-svg{
     width:100%;
     height:auto;
-    background:#FAFBFE;
+    background:#FFFFFF;
     border:1px solid var(--border);
     border-radius:var(--radius);
     -webkit-print-color-adjust:exact;
@@ -616,18 +670,25 @@
     .schedule-table th{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--navy) !important;
-      color:#fff !important;
+      background:var(--c-green-15) !important;
+      color:var(--c-graphite) !important;
+      border-bottom:2px solid var(--c-emerald) !important;
     }
     .schedule-table tr.stage td{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--bg-alt) !important;
+      background:var(--c-cyan-5) !important;
+      color:var(--c-emerald-120) !important;
+    }
+    .schedule-table tr.group td{
+      -webkit-print-color-adjust:exact;
+      print-color-adjust:exact;
+      background:var(--c-green-5) !important;
     }
     .schedule-table tr.total td{
       -webkit-print-color-adjust:exact;
       print-color-adjust:exact;
-      background:var(--navy) !important;
+      background:var(--c-emerald) !important;
       color:#fff !important;
     }
     .schedule-doc-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -639,20 +700,12 @@
 
 <!-- LOGO + HEADER -->
 <header class="app-header">
-  <div class="logo-mark">
-    <!-- Litgrid 8-pointed star + circle, inline SVG -->
-    <svg width="44" height="44" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-      <g stroke="#1B2960" stroke-width="2.6" stroke-linecap="round" fill="none">
-        <line x1="22" y1="3"  x2="22" y2="41"/>
-        <line x1="3"  y1="22" x2="41" y2="22"/>
-        <line x1="8.5"  y1="8.5"  x2="35.5" y2="35.5"/>
-        <line x1="35.5" y1="8.5"  x2="8.5"  y2="35.5"/>
-      </g>
-      <circle cx="22" cy="22" r="7" stroke="#1B2960" stroke-width="2.4" fill="none"/>
-      <circle cx="22" cy="22" r="1.7" fill="#1B2960"/>
+  <div class="brand-block">
+    <svg class="logo-mark" viewBox="0 0 470 470" xmlns="http://www.w3.org/2000/svg" aria-label="Litgrid">
+      <path fill="#0F2D46" d="M316.4,227.52c-1.49-17.44-8.2-33.15-18.89-45.84L404.36,74.51l-9.67-9.73L287.81,171.95 c-12.68-10.7-28.33-17.7-45.73-18.93V1.5h-13.92v151.51c-17.15,1.23-33.05,8.24-45.48,18.93L75.56,64.78l-9.69,9.73l106.87,107.17 c-10.68,12.69-17.39,28.4-18.89,45.84H2.74v13.95h151.11c1.49,17.21,8.2,33.15,18.89,45.61L65.87,394.48l9.69,9.72l107.12-107.15 c12.43,10.7,28.33,17.44,45.48,18.94V467.5h13.92V315.99c17.39-1.5,33.05-8.24,45.73-18.94L394.69,404.2l9.67-9.72L297.51,287.08 c10.68-12.46,17.39-28.4,18.89-45.61h151.36v-13.95H316.4z M182.68,191.65l35.79,35.88h-50.7 C169.01,214.07,174.48,201.61,182.68,191.65z M167.77,241.47h50.7l-35.79,35.88C174.48,267.38,169.01,254.93,167.77,241.47z M228.16,302.03c-13.42-1.26-25.85-6.74-35.79-14.95l35.79-35.88V302.03z M228.16,217.56l-35.79-35.88 c9.94-7.97,22.37-13.46,35.79-14.95V217.56z M242.08,166.73c13.42,1.49,25.85,6.98,35.79,14.95l-35.79,35.88V166.73z M242.08,302.03v-50.83l35.79,35.88C267.93,295.29,255.5,300.77,242.08,302.03z M287.81,277.35l-35.79-35.88h50.7 C301.23,254.93,295.77,267.38,287.81,277.35z M252.02,227.52l35.79-35.88c7.95,9.96,13.42,22.42,14.91,35.88H252.02z"/>
     </svg>
+    <span class="logo-text">Litgrid</span>
   </div>
-  <div class="logo-text">Litgrid</div>
   <div class="app-title">
     <h1>Pirkimų grafikų generatorius</h1>
     <p>Vidinis įrankis pirkimo iniciatoriams ir pirkimo organizatoriams</p>
@@ -1779,24 +1832,24 @@ function renderPhases(){
   els.tEndDate.textContent = lastEnd ? fmtDateLTLong(lastEnd) : '—';
 }
 
-/* ---------- GANTT DIAGRAMA ---------- */
+/* ---------- GANTT DIAGRAMA — EPSO-G paletė ---------- */
 const GANTT_PALETTE = [
-  '#1B2960', // navy
-  '#2E3D75', // navy-light
-  '#4A6BCC', // accent blue
-  '#5B8DB8', // steel blue
-  '#6BA89C', // teal
-  '#2A8C5F', // green
-  '#8B5CA6', // purple
-  '#5C7CB8', // mid blue
-  '#3D6F88', // dark teal
-  '#7A6BA8', // muted purple
-  '#4F8B7B', // forest
-  '#6680B0', // soft blue
-  '#445E94', // navy mid
+  '#00A072', // Smaragdas
+  '#00667D', // Mėlyna
+  '#00A5C4', // Melsva
+  '#459D54', // Žalia
+  '#85BC28', // Laimo
+  '#128A76', // Smaragdas-120
+  '#16C492', // Smaragdas-50
+  '#0F2D46', // Litgrid Navy
+  '#2E3641', // Grafitas
+  '#737483', // Grafitas-50
+  '#0FAA8A', // Smaragdas variantas
+  '#3D7E8E', // Mėlyna variantas
+  '#5A8E2F', // Laimo-120
 ];
-const GANTT_CUSTOM_COLOR = '#C77F1A'; // orange — papild. etapai
-const GANTT_TODAY_COLOR  = '#A6262C';
+const GANTT_CUSTOM_COLOR = '#FAB03B'; // Įspėjimas — papild. etapai
+const GANTT_TODAY_COLOR  = '#DB354A'; // Klaida — šiandien linija
 
 function renderGantt(sched){
   if(!sched || sched.length===0) return '';
@@ -1850,9 +1903,9 @@ function renderGantt(sched){
 
   let svg = `<svg viewBox="0 0 ${totalWidth} ${totalHeight}" xmlns="http://www.w3.org/2000/svg" class="schedule-gantt-svg" preserveAspectRatio="xMinYMid meet">`;
 
-  // Antraštės fonas
-  svg += `<rect x="0" y="0" width="${totalWidth}" height="${headerHeight}" fill="#1B2960" />`;
-  svg += `<text x="14" y="${headerHeight/2 + 4}" font-size="11" fill="#FFFFFF" font-weight="600" letter-spacing=".4">PIRKIMO ETAPAS</text>`;
+  // Antraštės fonas — Grafitas
+  svg += `<rect x="0" y="0" width="${totalWidth}" height="${headerHeight}" fill="#2E3641" />`;
+  svg += `<text x="14" y="${headerHeight/2 + 4}" font-size="11" fill="#FFFFFF" font-weight="700" letter-spacing=".5">PIRKIMO ETAPAS</text>`;
 
   // Mėnesio juostos
   const startMonth = new Date(earliest.getFullYear(), earliest.getMonth(), 1);
@@ -1866,17 +1919,17 @@ function renderGantt(sched){
     const x = labelWidth + offsetA * dayWidth;
     const w = (offsetB - offsetA) * dayWidth;
     if(w<=0){ monthCursor = nextMonth; monthIdx++; continue; }
-    // Mėnesio juosta
-    svg += `<rect x="${x}" y="0" width="${w}" height="${headerHeight}" fill="${monthIdx%2===0 ? '#243573' : '#2E3D75'}" />`;
+    // Mėnesio juosta — Grafitas atspalviai
+    svg += `<rect x="${x}" y="0" width="${w}" height="${headerHeight}" fill="${monthIdx%2===0 ? '#2E3641' : '#3A434F'}" />`;
     // Mėnesio etiketė
     if(w>50){
-      svg += `<text x="${x + w/2}" y="18" text-anchor="middle" font-size="10.5" fill="#FFFFFF" font-weight="600">${months[monthCursor.getMonth()]} ${monthCursor.getFullYear()}</text>`;
+      svg += `<text x="${x + w/2}" y="18" text-anchor="middle" font-size="10.5" fill="#FFFFFF" font-weight="700">${months[monthCursor.getMonth()]} ${monthCursor.getFullYear()}</text>`;
     } else if(w>22){
-      svg += `<text x="${x + w/2}" y="18" text-anchor="middle" font-size="9.5" fill="#FFFFFF" font-weight="600">${monthsShort[monthCursor.getMonth()]}</text>`;
+      svg += `<text x="${x + w/2}" y="18" text-anchor="middle" font-size="9.5" fill="#FFFFFF" font-weight="700">${monthsShort[monthCursor.getMonth()]}</text>`;
     }
     // Mėnesio pradžia data
     if(w>40){
-      svg += `<text x="${x + 6}" y="${headerHeight - 6}" font-size="8.5" fill="#B7C2DC">${monthCursor.getDate()} d.</text>`;
+      svg += `<text x="${x + 6}" y="${headerHeight - 6}" font-size="8.5" fill="#C7CDD3">${monthCursor.getDate()} d.</text>`;
     }
     monthCursor = nextMonth; monthIdx++;
   }
@@ -1887,7 +1940,7 @@ function renderGantt(sched){
     const offsetD = (monthCursor - earliest) / 86400000;
     if(offsetD>0 && offsetD<totalDays){
       const x = labelWidth + offsetD * dayWidth;
-      svg += `<line x1="${x}" y1="${headerHeight}" x2="${x}" y2="${totalHeight - 8}" stroke="#DCE2F0" stroke-width="0.7" />`;
+      svg += `<line x1="${x}" y1="${headerHeight}" x2="${x}" y2="${totalHeight - 8}" stroke="#E1E2E4" stroke-width="0.7" />`;
     }
     monthCursor.setMonth(monthCursor.getMonth()+1);
   }
@@ -1907,19 +1960,19 @@ function renderGantt(sched){
     const color = item.custom ? GANTT_CUSTOM_COLOR : GANTT_PALETTE[i % GANTT_PALETTE.length];
 
     // Eilės fonas (kintami atspalviai)
-    svg += `<rect x="0" y="${y}" width="${totalWidth}" height="${rowHeight}" fill="${i%2===0 ? '#FFFFFF' : '#F4F6FC'}" />`;
+    svg += `<rect x="0" y="${y}" width="${totalWidth}" height="${rowHeight}" fill="${i%2===0 ? '#FFFFFF' : '#EFF1F1'}" />`;
 
     // Etiketė kairėje
     let label = `${item.code} · ${item.name}`;
     const maxChars = 38;
     if(label.length > maxChars) label = label.slice(0, maxChars-1) + '…';
-    svg += `<text x="14" y="${y + rowHeight/2 + 4}" font-size="11" fill="#16213A">${escapeXml(label)}</text>`;
+    svg += `<text x="14" y="${y + rowHeight/2 + 4}" font-size="11" fill="#2E3641" font-weight="600">${escapeXml(label)}</text>`;
 
     // Spalvos žymeklis prie etiketės pabaigos
     svg += `<rect x="${labelWidth - 14}" y="${y + rowHeight/2 - 4}" width="6" height="8" rx="1.5" fill="${color}" />`;
 
-    // Vertikalus separatorius
-    svg += `<line x1="${labelWidth}" y1="${y}" x2="${labelWidth}" y2="${y + rowHeight}" stroke="#1B2960" stroke-width="1" />`;
+    // Vertikalus separatorius — Smaragdas
+    svg += `<line x1="${labelWidth}" y1="${y}" x2="${labelWidth}" y2="${y + rowHeight}" stroke="#00A072" stroke-width="1" />`;
 
     // Bar'as
     svg += `<rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" fill="${color}" rx="2" />`;
@@ -1946,8 +1999,7 @@ function renderGantt(sched){
 
   // Legenda
   const legendItems = [];
-  legendItems.push(`<div class="gantt-legend-item"><div class="gantt-legend-swatch" style="background:${GANTT_PALETTE[0]}"></div>Pasirengimo etapas (1.1, 1.2)</div>`);
-  legendItems.push(`<div class="gantt-legend-item"><div class="gantt-legend-swatch" style="background:${GANTT_PALETTE[2]}"></div>Pirkimo vykdymo etapas</div>`);
+  legendItems.push(`<div class="gantt-legend-item"><div class="gantt-legend-swatch" style="background:${GANTT_PALETTE[0]}"></div>Etapų grupės žymimos atskiromis spalvomis</div>`);
   if(items.some(i => i.custom)){
     legendItems.push(`<div class="gantt-legend-item"><div class="gantt-legend-swatch" style="background:${GANTT_CUSTOM_COLOR}"></div>Papildomas etapas</div>`);
   }
@@ -2142,18 +2194,13 @@ function refreshPreview(){
 function renderDocHeader(typeLabel, today){
   return `<div class="schedule-doc-header">
     <div class="doc-logo">
-      <svg width="34" height="34" viewBox="0 0 44 44" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="#1B2960" stroke-width="2.6" stroke-linecap="round" fill="none">
-          <line x1="22" y1="3" x2="22" y2="41"/><line x1="3" y1="22" x2="41" y2="22"/>
-          <line x1="8.5" y1="8.5" x2="35.5" y2="35.5"/><line x1="35.5" y1="8.5" x2="8.5" y2="35.5"/>
-        </g>
-        <circle cx="22" cy="22" r="7" stroke="#1B2960" stroke-width="2.4" fill="none"/>
-        <circle cx="22" cy="22" r="1.7" fill="#1B2960"/>
+      <svg width="32" height="32" viewBox="0 0 470 470" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#0F2D46" d="M316.4,227.52c-1.49-17.44-8.2-33.15-18.89-45.84L404.36,74.51l-9.67-9.73L287.81,171.95 c-12.68-10.7-28.33-17.7-45.73-18.93V1.5h-13.92v151.51c-17.15,1.23-33.05,8.24-45.48,18.93L75.56,64.78l-9.69,9.73l106.87,107.17 c-10.68,12.69-17.39,28.4-18.89,45.84H2.74v13.95h151.11c1.49,17.21,8.2,33.15,18.89,45.61L65.87,394.48l9.69,9.72l107.12-107.15 c12.43,10.7,28.33,17.44,45.48,18.94V467.5h13.92V315.99c17.39-1.5,33.05-8.24,45.73-18.94L394.69,404.2l9.67-9.72L297.51,287.08 c10.68-12.46,17.39-28.4,18.89-45.61h151.36v-13.95H316.4z M182.68,191.65l35.79,35.88h-50.7 C169.01,214.07,174.48,201.61,182.68,191.65z M167.77,241.47h50.7l-35.79,35.88C174.48,267.38,169.01,254.93,167.77,241.47z M228.16,302.03c-13.42-1.26-25.85-6.74-35.79-14.95l35.79-35.88V302.03z M228.16,217.56l-35.79-35.88 c9.94-7.97,22.37-13.46,35.79-14.95V217.56z M242.08,166.73c13.42,1.49,25.85,6.98,35.79,14.95l-35.79,35.88V166.73z M242.08,302.03v-50.83l35.79,35.88C267.93,295.29,255.5,300.77,242.08,302.03z M287.81,277.35l-35.79-35.88h50.7 C301.23,254.93,295.77,267.38,287.81,277.35z M252.02,227.52l35.79-35.88c7.95,9.96,13.42,22.42,14.91,35.88H252.02z"/>
       </svg>
       <div class="doc-logo-text">Litgrid</div>
     </div>
     <div class="schedule-doc-meta">
-      <div>${typeLabel}</div>
+      <div style="font-weight:700;color:var(--c-graphite);font-size:12px">${typeLabel}</div>
       <div>Sudaryta: ${fmtDateLT(today)}</div>
     </div>
   </div>`;
