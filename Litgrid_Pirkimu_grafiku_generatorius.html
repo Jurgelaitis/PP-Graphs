@@ -721,14 +721,6 @@
         <span class="hint">Pirkimo paraiškos priskyrimo data. Skaičiavimas vykdomas tik darbo dienomis (be šeštadienių, sekmadienių ir LR švenčių).</span>
       </div>
 
-      <div class="form-field">
-        <label>Detalumo lygis</label>
-        <div class="toggle-group" id="t-detail">
-          <button type="button" data-val="simple" class="active">Supaprastintas</button>
-          <button type="button" data-val="detailed">Detalus</button>
-        </div>
-        <span class="hint">Supaprastintas — tik pagrindiniai etapai (1.1, 1.2, 1.3...). Detalus — su VPK ir Valdybos žingsniais.</span>
-      </div>
     </div>
   </section>
 
@@ -746,7 +738,7 @@
 
     <div id="phases-content" style="display:none">
       <div class="phases-info">
-        <strong>Patarimas:</strong> standartines trukmes galite koreguoti. Jei trukmė skiriasi nuo standartinės, <strong>būtina užpildyti pastabų laukelį</strong> — ši informacija atvaizduojama tik A tipo grafike.
+        <strong>Patarimas:</strong> standartines trukmes galite koreguoti. Jei terminas <strong>pratęsiamas</strong> (ilgesnis nei standartas), reikalinga užpildyti pastabų laukelį. Trumpinant terminus pastabos nereikalingos.
       </div>
 
       <table class="phases-table">
@@ -772,42 +764,79 @@
 
         <div class="add-phase-form" id="add-phase-form" style="display:none">
           <h4>Pridėti naują etapą</h4>
-          <div class="add-phase-form-row">
-            <div class="form-field">
-              <label>Etapo grupė <span class="req">*</span></label>
-              <select id="add-phase-stage" onchange="updatePositionDropdown()">
-                <option value="vykdymas">Pirkimo vykdymo etapas</option>
-                <option value="pasirengimas">Pasirengimo etapas</option>
-              </select>
-            </div>
-            <div class="form-field" style="grid-column:span 2">
-              <label>Pavadinimas <span class="req">*</span></label>
-              <select id="add-phase-name" onchange="onAddPhaseNameChange()">
-                <option value="">— Pasirinkite —</option>
-                <option value="Papildomas derinimas">Papildomas derinimas</option>
-                <option value="Nagrinėjama pretenzija">Nagrinėjama pretenzija</option>
-                <option value="Teismo ieškinys">Teismo ieškinys</option>
-                <option value="Derinama su institucijomis (CVPA, VPT ir kt.)">Derinama su institucijomis (CVPA, VPT ir kt.)</option>
-                <option value="Vadovų taryba, Valdyba">Vadovų taryba, Valdyba</option>
-                <option value="Visuotinis akcininkų susirinkimo sprendimas">Visuotinis akcininkų susirinkimo sprendimas</option>
-                <option value="Nacionalinio saugumo komisijos patikra">Nacionalinio saugumo komisijos patikra</option>
-                <option value="__custom__">Kita... (rašyti ranka)</option>
-              </select>
-              <input type="text" id="add-phase-name-custom" placeholder="Įveskite etapo pavadinimą" style="display:none;margin-top:6px">
-            </div>
-            <div class="form-field">
-              <label>Trukmė (d.d.) <span class="req">*</span></label>
-              <input type="number" id="add-phase-duration" min="0" value="1">
+
+          <div class="form-field" style="margin-bottom:14px">
+            <label>Pridėti kaip</label>
+            <div class="toggle-group" id="add-mode-toggle">
+              <button type="button" data-mode="main" class="active">Pagrindinį etapą</button>
+              <button type="button" data-mode="sub">Sub-etapą po pasirinktos grupės</button>
             </div>
           </div>
-          <div class="add-phase-form-row position">
-            <div class="form-field">
-              <label>Įterpti</label>
-              <select id="add-phase-position">
-                <option value="end">Pabaigoje (etapo)</option>
-              </select>
+
+          <!-- PAGRINDINIO ETAPO laukai -->
+          <div id="add-mode-main-fields">
+            <div class="add-phase-form-row">
+              <div class="form-field">
+                <label>Etapo grupė <span class="req">*</span></label>
+                <select id="add-phase-stage" onchange="updatePositionDropdown()">
+                  <option value="vykdymas">Pirkimo vykdymo etapas</option>
+                  <option value="pasirengimas">Pasirengimo etapas</option>
+                </select>
+              </div>
+              <div class="form-field" style="grid-column:span 2">
+                <label>Pavadinimas <span class="req">*</span></label>
+                <select id="add-phase-name" onchange="onAddPhaseNameChange()">
+                  <option value="">— Pasirinkite —</option>
+                  <option value="Papildomas derinimas">Papildomas derinimas</option>
+                  <option value="Nagrinėjama pretenzija">Nagrinėjama pretenzija</option>
+                  <option value="Teismo ieškinys">Teismo ieškinys</option>
+                  <option value="Derinama su institucijomis (CVPA, VPT ir kt.)">Derinama su institucijomis (CVPA, VPT ir kt.)</option>
+                  <option value="Vadovų taryba, Valdyba">Vadovų taryba, Valdyba</option>
+                  <option value="Visuotinis akcininkų susirinkimo sprendimas">Visuotinis akcininkų susirinkimo sprendimas</option>
+                  <option value="Nacionalinio saugumo komisijos patikra">Nacionalinio saugumo komisijos patikra</option>
+                  <option value="__custom__">Kita... (rašyti ranka)</option>
+                </select>
+                <input type="text" id="add-phase-name-custom" placeholder="Įveskite etapo pavadinimą" style="display:none;margin-top:6px">
+              </div>
+              <div class="form-field">
+                <label>Trukmė (d.d.) <span class="req">*</span></label>
+                <input type="number" id="add-phase-duration" min="0" value="1">
+              </div>
+            </div>
+            <div class="add-phase-form-row position">
+              <div class="form-field">
+                <label>Įterpti</label>
+                <select id="add-phase-position">
+                  <option value="end">Pabaigoje (etapo)</option>
+                </select>
+              </div>
             </div>
           </div>
+
+          <!-- SUB-ETAPO laukai -->
+          <div id="add-mode-sub-fields" style="display:none">
+            <div class="add-phase-form-row">
+              <div class="form-field" style="grid-column:span 2">
+                <label>Tėvinė grupė <span class="req">*</span></label>
+                <select id="add-sub-parent">
+                  <option value="">— Pasirinkite grupę —</option>
+                </select>
+                <span class="hint">Sub-etapas bus pridėtas šios grupės pabaigoje.</span>
+              </div>
+              <div class="form-field" style="grid-column:span 2">
+                <label>Pavadinimas <span class="req">*</span></label>
+                <input type="text" id="add-sub-name" placeholder="pvz. Papildomas TS derinimas">
+              </div>
+            </div>
+            <div class="add-phase-form-row" style="grid-template-columns:1fr 3fr">
+              <div class="form-field">
+                <label>Trukmė (d.d.) <span class="req">*</span></label>
+                <input type="number" id="add-sub-duration" min="0" value="1">
+              </div>
+              <div></div>
+            </div>
+          </div>
+
           <div class="form-actions">
             <button type="button" class="btn btn-ghost" onclick="cancelAddPhase()">Atšaukti</button>
             <button type="button" class="btn btn-primary" onclick="confirmAddPhase()">Pridėti etapą</button>
@@ -1254,10 +1283,10 @@ const METHODS = {
 const state = {
   methodCode:null,
   groups:[],         // gilios kopijos su current durations
-  detailLevel:'simple', // 'simple' | 'detailed'
   startDate:null,
   notes:{},          // { phaseCode: '...' }
   customCounter:0,   // unikaliam custom etapų ID generavimui
+  addMode:'main',    // 'main' | 'sub' — Pridėti etapą formos režimas
 };
 
 /* Display code: dinaminis numeravimas pagal poziciją (1.1, 1.2, 1.3...) */
@@ -1277,7 +1306,6 @@ const els = {
   organizatorius: document.getElementById('f-organizatorius'),
   budas: document.getElementById('f-budas'),
   pradzia: document.getElementById('f-pradzia'),
-  detail: document.getElementById('t-detail'),
   phasesEmpty: document.getElementById('phases-empty'),
   phasesContent: document.getElementById('phases-content'),
   phasesTbody: document.getElementById('phases-tbody'),
@@ -1298,13 +1326,15 @@ els.pavadinimas.addEventListener('input', refreshPreview);
 els.iniciatorius.addEventListener('input', refreshPreview);
 els.organizatorius.addEventListener('input', refreshPreview);
 
-els.detail.querySelectorAll('button').forEach(btn => {
+// Pridėti etapą — režimo perjungiklis (pagrindinis / sub-etapas)
+document.querySelectorAll('#add-mode-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
-    els.detail.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('#add-mode-toggle button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    state.detailLevel = btn.dataset.val;
-    renderPhases();
-    refreshPreview();
+    state.addMode = btn.dataset.mode;
+    document.getElementById('add-mode-main-fields').style.display = state.addMode==='main' ? 'block' : 'none';
+    document.getElementById('add-mode-sub-fields').style.display  = state.addMode==='sub'  ? 'block' : 'none';
+    if(state.addMode==='sub') updateParentDropdown();
   });
 });
 
@@ -1339,12 +1369,24 @@ function showAddPhaseForm(){
   if(!state.methodCode){ alert('Pirma pasirinkite pirkimo būdą.'); return; }
   document.getElementById('add-phase-form').style.display='block';
   document.getElementById('btn-add-phase').style.display='none';
+  // Atstatyti į pagrindinio etapo režimą
+  state.addMode='main';
+  document.querySelectorAll('#add-mode-toggle button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.mode==='main');
+  });
+  document.getElementById('add-mode-main-fields').style.display='block';
+  document.getElementById('add-mode-sub-fields').style.display='none';
+  // Pagrindinio režimo laukai
   document.getElementById('add-phase-stage').value='vykdymas';
   document.getElementById('add-phase-name').value='';
   document.getElementById('add-phase-name-custom').style.display='none';
   document.getElementById('add-phase-name-custom').value='';
   document.getElementById('add-phase-duration').value=1;
   updatePositionDropdown();
+  // Sub-etapo režimo laukai
+  document.getElementById('add-sub-name').value='';
+  document.getElementById('add-sub-duration').value=1;
+  updateParentDropdown();
 }
 function cancelAddPhase(){
   const f=document.getElementById('add-phase-form');
@@ -1370,7 +1412,27 @@ function updatePositionDropdown(){
     }
   });
 }
+function updateParentDropdown(){
+  const select=document.getElementById('add-sub-parent');
+  if(!select) return;
+  select.innerHTML='<option value="">— Pasirinkite grupę —</option>';
+  // Rodyti tik grupes, kurios JAU turi sub-etapus arba leisti pridėti į bet kokią grupę
+  state.groups.forEach(g => {
+    const hasSubs = g.subPhases && g.subPhases.length>0;
+    const opt=document.createElement('option');
+    opt.value=g.code;
+    const stageLabel = g.stage==='pasirengimas' ? 'Pasireng.' : 'Vykdymas';
+    const subInfo = hasSubs ? `(${g.subPhases.length} sub-etap.)` : '(be sub-etapų)';
+    opt.textContent=`${getDisplayCode(g)} ${g.name} — ${stageLabel} ${subInfo}`;
+    select.appendChild(opt);
+  });
+}
 function confirmAddPhase(){
+  if(state.addMode==='sub'){
+    confirmAddSubPhase();
+    return;
+  }
+  // Pagrindinis (top-level) etapas
   const stage=document.getElementById('add-phase-stage').value;
   let name=document.getElementById('add-phase-name').value;
   if(name==='__custom__'){
@@ -1391,11 +1453,9 @@ function confirmAddPhase(){
   };
 
   if(position==='end'){
-    // Įterpti po paskutinio šio etapo grupės
     let lastStageIdx=-1;
     state.groups.forEach((g, i) => { if(g.stage===stage) lastStageIdx=i; });
     if(lastStageIdx<0){
-      // Šio etapo grupių nėra — pridėti pasirengimas pradžioje, vykdymas pabaigoje
       if(stage==='pasirengimas') state.groups.unshift(newGroup);
       else state.groups.push(newGroup);
     } else {
@@ -1408,6 +1468,31 @@ function confirmAddPhase(){
   cancelAddPhase();
   refreshAll();
 }
+
+function confirmAddSubPhase(){
+  const parentCode=document.getElementById('add-sub-parent').value;
+  if(!parentCode){ alert('Pasirinkite tėvinę grupę.'); return; }
+  const name=document.getElementById('add-sub-name').value.trim();
+  if(!name){ alert('Įveskite sub-etapo pavadinimą.'); return; }
+  const duration=Math.max(0, Number(document.getElementById('add-sub-duration').value)||0);
+
+  const parent=state.groups.find(g => g.code===parentCode);
+  if(!parent){ alert('Tėvinė grupė nerasta.'); return; }
+
+  state.customCounter++;
+  const newSub={
+    code:'_csub'+Date.now()+'_'+state.customCounter,
+    name:name,
+    duration:duration,
+    custom:true
+  };
+  if(!parent.subPhases) parent.subPhases=[];
+  parent.subPhases.push(newSub);
+
+  cancelAddPhase();
+  refreshAll();
+}
+
 function deletePhase(code){
   const group=state.groups.find(g => g.code===code);
   if(!group) return;
@@ -1418,6 +1503,21 @@ function deletePhase(code){
   if(!confirm(msg)) return;
   state.groups = state.groups.filter(g => g.code!==code);
   delete state.notes[code];
+  refreshAll();
+}
+
+function deleteSubPhase(groupCode, subCode){
+  const group=state.groups.find(g => g.code===groupCode);
+  if(!group || !group.subPhases) return;
+  const sub=group.subPhases.find(sp => sp.code===subCode);
+  if(!sub) return;
+  const isCustom=!!sub.custom;
+  const msg = isCustom
+    ? `Pašalinti pridėtą sub-etapą „${sub.name}"?`
+    : `Pašalinti standartinį sub-etapą „${sub.name}"?\n\nĮtraukti tai į pasirengimo etapo trukmę?`;
+  if(!confirm(msg)) return;
+  group.subPhases = group.subPhases.filter(sp => sp.code!==subCode);
+  delete state.notes[subCode];
   refreshAll();
 }
 
@@ -1550,6 +1650,7 @@ function renderPhases(){
     const stdDur = getStandardDuration(g.code);
     const isCustom = !!g.custom;
     const isModified = !hasSubs && !isCustom && stdDur !== null && groupDur !== stdDur;
+    const noteRequired = !hasSubs && !isCustom && stdDur !== null && groupDur > stdDur;
     const dispCode = getDisplayCode(g);
 
     // Group row
@@ -1565,11 +1666,10 @@ function renderPhases(){
       if(!isCustom && stdDur!==null) durCell += `<span class="duration-std">std: ${stdDur} d.d.</span>`;
       if(isCustom) durCell += `<span class="duration-std">papildomas etapas</span>`;
     }
-    const noteRequired = isModified;
     const noteVal = state.notes[g.code] || '';
     const notesCell = !hasSubs ?
       `<textarea class="notes-input ${noteRequired?'required':''}" data-note="${g.code}"
-        placeholder="${noteRequired?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${noteVal}</textarea>`
+        placeholder="${noteRequired?'⚠ Privalomas — paaiškinkite pratęsimą':'Pastaba (neprivaloma)'}">${noteVal}</textarea>`
       : '<span style="color:var(--text-muted);font-size:11px">— sumuojamos sub-etapų pastabos</span>';
     const customFlag = isCustom ? '<span class="custom-row-flag">+ Papild.</span>' : '';
     const deleteBtn = `<button type="button" class="btn-delete-row ${isCustom?'custom':''}" data-delete="${g.code}" title="Pašalinti šį etapą">×</button>`;
@@ -1586,31 +1686,38 @@ function renderPhases(){
     tbody.appendChild(groupRow);
 
     // Subphase rows (detailed mode only, only if group has subs)
-    if(state.detailLevel==='detailed' && hasSubs){
+    if(hasSubs){
       g.subPhases.forEach((sp, si) => {
         const subSr = sr.subResults[si];
         const spStdDur = getStandardDuration(sp.code);
-        const spIsMod = spStdDur !== null && (Number(sp.duration)||0) !== spStdDur;
+        const spIsCustom = !!sp.custom;
+        const spIsMod = !spIsCustom && spStdDur !== null && (Number(sp.duration)||0) !== spStdDur;
+        const spNoteRequired = !spIsCustom && spStdDur !== null && (Number(sp.duration)||0) > spStdDur;
         const subRow = document.createElement('tr');
         subRow.className = 'subphase-row';
         const subNoteVal = state.notes[sp.code] || '';
         const subDispCode = getSubDisplayCode(g, si);
+        const stdLine = spIsCustom
+          ? '<span class="duration-std">papildomas sub-etapas</span>'
+          : (spStdDur!==null ? `<span class="duration-std">std: ${spStdDur} d.d.</span>` : '');
+        const customFlag = spIsCustom ? '<span class="custom-row-flag">+ Papild.</span>' : '';
+        const subDeleteBtn = `<button type="button" class="btn-delete-row ${spIsCustom?'custom':''}" data-delete-sub="${g.code}|${sp.code}" title="Pašalinti sub-etapą">×</button>`;
         subRow.innerHTML = `
           <td class="col-num">${subDispCode}</td>
-          <td>${sp.name}</td>
+          <td>${sp.name}${customFlag}</td>
           <td>
             <input type="number" min="0" class="duration-input ${spIsMod?'modified':''}"
               data-group="${gi}" data-sub="${si}" value="${sp.duration}">
             <span class="duration-suffix">d.d.</span>
-            <span class="duration-std">std: ${spStdDur} d.d.</span>
+            ${stdLine}
           </td>
           <td class="col-start">${fmtDateLT(subSr.start)}</td>
           <td class="col-end">${fmtDateLT(subSr.end)}</td>
           <td>
-            <textarea class="notes-input ${spIsMod?'required':''}" data-note="${sp.code}"
-              placeholder="${spIsMod?'⚠ Privalomas — paaiškinkite nukrypimą':'Pastaba (neprivaloma)'}">${subNoteVal}</textarea>
+            <textarea class="notes-input ${spNoteRequired?'required':''}" data-note="${sp.code}"
+              placeholder="${spNoteRequired?'⚠ Privalomas — paaiškinkite pratęsimą':'Pastaba (neprivaloma)'}">${subNoteVal}</textarea>
           </td>
-          <td class="col-actions"></td>
+          <td class="col-actions">${subDeleteBtn}</td>
         `;
         tbody.appendChild(subRow);
       });
@@ -1638,8 +1745,14 @@ function renderPhases(){
       refreshPreview();
     });
   });
-  tbody.querySelectorAll('.btn-delete-row').forEach(btn => {
+  tbody.querySelectorAll('.btn-delete-row[data-delete]').forEach(btn => {
     btn.addEventListener('click', () => deletePhase(btn.dataset.delete));
+  });
+  tbody.querySelectorAll('.btn-delete-row[data-delete-sub]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [groupCode, subCode] = btn.dataset.deleteSub.split('|');
+      deleteSubPhase(groupCode, subCode);
+    });
   });
 
   // Totals
@@ -1913,13 +2026,16 @@ function refreshPreview(){
     const groupDur = hasSubs ? g.subPhases.reduce((s,sp)=>s+(Number(sp.duration)||0),0) : (Number(g.duration)||0);
     const stdDur = getStandardDuration(g.code);
     const isCustom = !!g.custom;
-    const isMod = !hasSubs && !isCustom && stdDur !== null && groupDur !== stdDur;
+    const isExtended  = !hasSubs && !isCustom && stdDur !== null && groupDur > stdDur;
+    const isShortened = !hasSubs && !isCustom && stdDur !== null && groupDur < stdDur;
     const groupNote = state.notes[g.code] || '';
     let noteHtml = '';
     if(isCustom && groupNote) noteHtml = escapeHtml(groupNote);
     else if(isCustom) noteHtml = `<span style="color:var(--text-muted);font-style:italic;font-size:11px">papildomas etapas</span>`;
-    else if(isMod && groupNote) noteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(groupNote)}</span>`;
-    else if(isMod) noteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas nuo standarto (${stdDur}→${groupDur} d.d.) — pastaba neužpildyta</span>`;
+    else if(isExtended && groupNote) noteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(groupNote)}</span>`;
+    else if(isExtended) noteHtml = `<span class="schedule-notes-cell">⚠ Pratęstas terminas (${stdDur}→${groupDur} d.d.) — pastaba neužpildyta</span>`;
+    else if(isShortened && groupNote) noteHtml = escapeHtml(groupNote);
+    else if(isShortened) noteHtml = `<span style="color:var(--text-muted);font-style:italic;font-size:11px">trumpinta (${stdDur}→${groupDur} d.d.)</span>`;
     else if(groupNote) noteHtml = escapeHtml(groupNote);
 
     const dispCode = getDisplayCode(g);
@@ -1934,19 +2050,26 @@ function refreshPreview(){
       <td>${noteHtml}</td>
     </tr>`;
 
-    if(state.detailLevel==='detailed' && hasSubs){
+    if(hasSubs){
       g.subPhases.forEach((sp, si) => {
         const subSr = sr.subResults[si];
         const spStd = getStandardDuration(sp.code);
-        const spIsMod = spStd !== null && (Number(sp.duration)||0) !== spStd;
+        const spIsCustom = !!sp.custom;
+        const spIsExt  = !spIsCustom && spStd !== null && (Number(sp.duration)||0) > spStd;
+        const spIsShr  = !spIsCustom && spStd !== null && (Number(sp.duration)||0) < spStd;
         const spNote = state.notes[sp.code] || '';
         let spNoteHtml = '';
-        if(spIsMod && spNote) spNoteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(spNote)}</span>`;
-        else if(spIsMod) spNoteHtml = `<span class="schedule-notes-cell">⚠ Nukrypimas (${spStd}→${sp.duration} d.d.) — pastaba neužpildyta</span>`;
+        if(spIsCustom && spNote) spNoteHtml = escapeHtml(spNote);
+        else if(spIsCustom) spNoteHtml = `<span style="color:var(--text-muted);font-style:italic;font-size:11px">papildomas sub-etapas</span>`;
+        else if(spIsExt && spNote) spNoteHtml = `<span class="schedule-notes-cell">⚠ ${escapeHtml(spNote)}</span>`;
+        else if(spIsExt) spNoteHtml = `<span class="schedule-notes-cell">⚠ Pratęstas (${spStd}→${sp.duration} d.d.) — pastaba neužpildyta</span>`;
+        else if(spIsShr && spNote) spNoteHtml = escapeHtml(spNote);
+        else if(spIsShr) spNoteHtml = `<span style="color:var(--text-muted);font-style:italic;font-size:11px">trumpinta (${spStd}→${sp.duration} d.d.)</span>`;
         else if(spNote) spNoteHtml = escapeHtml(spNote);
+        const spCustomMark = spIsCustom ? ' <span style="color:var(--accent);font-size:10px;font-weight:600">[+]</span>' : '';
         aHtml += `<tr class="subphase">
           <td class="num">${getSubDisplayCode(g, si)}</td>
-          <td>${sp.name}</td>
+          <td>${sp.name}${spCustomMark}</td>
           <td class="duration">${sp.duration}</td>
           <td class="date">${fmtDateLT(subSr.start)}</td>
           <td class="date">${fmtDateLT(subSr.end)}</td>
@@ -2066,25 +2189,27 @@ function printSchedule(){
     alert('Įveskite pirkimo pradžios datą prieš spausdinant.');
     return;
   }
-  // Check for unresolved deviation notes
+  // Tik PRATĘSIMAS reikalauja pastabos (trumpinimas — laisvas)
   let missing = [];
   for(const g of state.groups){
     if(g.subPhases && g.subPhases.length>0){
       for(const sp of g.subPhases){
+        if(sp.custom) continue;
         const std = getStandardDuration(sp.code);
-        if(std !== null && (Number(sp.duration)||0) !== std && !state.notes[sp.code]){
-          missing.push(`${sp.code} ${sp.name}`);
+        if(std !== null && (Number(sp.duration)||0) > std && !state.notes[sp.code]){
+          missing.push(`${getDisplayCode(g)}.${g.subPhases.indexOf(sp)+1} ${sp.name}`);
         }
       }
     } else {
+      if(g.custom) continue;
       const std = getStandardDuration(g.code);
-      if(std !== null && (Number(g.duration)||0) !== std && !state.notes[g.code]){
-        missing.push(`${g.code} ${g.name}`);
+      if(std !== null && (Number(g.duration)||0) > std && !state.notes[g.code]){
+        missing.push(`${getDisplayCode(g)} ${g.name}`);
       }
     }
   }
   if(missing.length>0){
-    const ok = confirm(`Šie etapai turi nukrypimą nuo standarto, bet pastabų laukelis tuščias:\n\n• ${missing.slice(0,5).join('\n• ')}${missing.length>5?'\n• ...':''}\n\nA tipo grafike bus rodoma „pastaba neužpildyta“ žyma. Tęsti spausdinimą?`);
+    const ok = confirm(`Šie etapai pratęsti virš standartinio termino, bet pastabų laukelis tuščias:\n\n• ${missing.slice(0,5).join('\n• ')}${missing.length>5?'\n• ...':''}\n\nDetaliame grafike bus rodoma „pastaba neužpildyta” žyma. Tęsti spausdinimą?`);
     if(!ok) return;
   }
   window.print();
@@ -2101,6 +2226,7 @@ function resetForm(){
   state.groups=[];
   state.notes={};
   state.customCounter=0;
+  state.addMode='main';
   cancelAddPhase();
   refreshAll();
 }
