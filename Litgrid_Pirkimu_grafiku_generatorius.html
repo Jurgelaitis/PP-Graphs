@@ -735,27 +735,7 @@
 
       <div class="form-field">
         <label>Pirkimo organizatorius <span class="req">*</span></label>
-        <select id="f-organizatorius-select" onchange="onOrganizatoriusChange()">
-          <option value="">— Pasirinkite organizatorių —</option>
-          <optgroup label="Veiklos palaikymo pirkimų grupė">
-            <option>Agnietė Stankevičienė, grupės vadovė</option>
-            <option>Šarūnas Jurėnas, pirkimų projektų vadovas</option>
-            <option>Rita Kubilienė, pirkimų projektų vadovė</option>
-            <option>Jovita Buterlevičiūtė, pirkimų projektų vadovė</option>
-            <option>Viktorija Jakovleva-Ogut, pirkimų projektų vadovė</option>
-            <option>Sonata Vainauskaitė, pirkimų projektų vadovė</option>
-          </optgroup>
-          <optgroup label="Technologinių pirkimų grupė">
-            <option>Edita Kazakevičienė, grupės vadovė</option>
-            <option>Monika Puidokė, pirkimų vadovė</option>
-            <option>Rugilė Endzinaitė, pirkimų projektų vadovė</option>
-            <option>Jurgita Latvė, pirkimų projektų vadovė</option>
-            <option>Arūnas Gvozdas, pirkimų projektų vadovas</option>
-            <option>Karolina Virvičienė, pirkimų projektų vadovė</option>
-          </optgroup>
-          <option value="__other__">Kita (įrašyti ranka)</option>
-        </select>
-        <input type="text" id="f-organizatorius" placeholder="Vardas Pavardė, Pirkimų sk." style="display:none;margin-top:6px">
+        <input type="text" id="f-organizatorius" placeholder="Vardas Pavardė, Pirkimų sk.">
       </div>
 
       <div class="form-field">
@@ -1415,21 +1395,6 @@ document.querySelectorAll('.preview-tab').forEach(tab=>{
     showPreviewTab(tab.dataset.tab);
   });
 });
-
-/* ---------- ORGANIZATORIAUS PASIRINKIMAS ---------- */
-function onOrganizatoriusChange(){
-  const sel = document.getElementById('f-organizatorius-select');
-  const inp = document.getElementById('f-organizatorius');
-  if(sel.value === '__other__'){
-    inp.style.display = 'block';
-    inp.value = '';
-    inp.focus();
-  } else {
-    inp.style.display = 'none';
-    inp.value = sel.value || '';
-  }
-  refreshPreview();
-}
 
 /* ---------- 6. METHOD CHANGE ---------- */
 function onMethodChange(){
@@ -2299,9 +2264,6 @@ function resetForm(){
   els.pavadinimas.value='';
   els.iniciatorius.value='';
   els.organizatorius.value='';
-  const orgSel = document.getElementById('f-organizatorius-select');
-  if(orgSel){ orgSel.value=''; orgSel.style.display='block'; }
-  els.organizatorius.style.display='none';
   els.budas.value='';
   els.pradzia.value='';
   state.methodCode=null;
